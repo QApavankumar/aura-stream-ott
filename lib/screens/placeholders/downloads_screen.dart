@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/router/route_names.dart';
 import '../../models/media_item.dart';
+import '../../services/supabase_media_service.dart';
 import '../../widgets/common/frosted_glass.dart';
 
 class DownloadItem {
@@ -51,8 +52,8 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
   late List<DownloadItem> _downloads;
 
   // Trending offline recommendations
-  final List<Movie> _trendingOffline = [
-    const Movie(
+  static const List<Movie> _defaultTrendingOffline = [
+    Movie(
       id: 'trend_off_01',
       title: 'Orbital Protocol: Redux',
       synopsis: 'Deep space station telemetry mystery.',
@@ -64,7 +65,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
       duration: '2h 10m',
       maturityRating: '16+',
     ),
-    const Movie(
+    Movie(
       id: 'trend_off_02',
       title: 'Shadow Nexus: 2099',
       synopsis: 'Underground cyber rebellion in Neo Tokyo.',
@@ -76,7 +77,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
       duration: '1h 55m',
       maturityRating: '18+',
     ),
-    const Movie(
+    Movie(
       id: 'trend_off_03',
       title: 'Formula 1: Monaco GP Qualifiers',
       synopsis: 'Full 4K HDR onboard telemetry capture.',
@@ -88,7 +89,7 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
       duration: '1h 45m',
       maturityRating: 'All',
     ),
-    const Movie(
+    Movie(
       id: 'trend_off_04',
       title: 'The Infinite Dimension',
       synopsis: 'Cosmic multiverse voyage through black hole accretion.',
@@ -102,11 +103,14 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
     ),
   ];
 
+  late List<Movie> _trendingOffline;
   final Set<String> _downloadingIds = {};
 
   @override
   void initState() {
     super.initState();
+    _trendingOffline = List.from(_defaultTrendingOffline);
+    _loadCloudRecommendations();
     _downloads = [
       DownloadItem(
         id: 'dl_01',
@@ -189,6 +193,17 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
         ),
       ),
     ];
+  }
+
+  Future<void> _loadCloudRecommendations() async {
+    try {
+      final cloudMovies = await SupabaseMediaService().fetchMovies();
+      if (cloudMovies.isNotEmpty && mounted) {
+        setState(() {
+          _trendingOffline = cloudMovies;
+        });
+      }
+    } catch (_) {}
   }
 
   void _playMedia(Movie movie) {

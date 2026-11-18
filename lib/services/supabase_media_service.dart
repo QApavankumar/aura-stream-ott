@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/media_item.dart';
+import '../widgets/feed/modern_hero_banner.dart';
+import '../widgets/feed/live_match_card.dart';
+import '../widgets/feed/popular_4k_card.dart';
 import 'supabase_service.dart';
 
 class SupabaseMediaService {
@@ -15,11 +18,150 @@ class SupabaseMediaService {
     if (!isReady) return [];
 
     try {
-      final response = await _client!.from('movies').select();
+      final response = await _client!
+          .from('movies')
+          .select()
+          .order('created_at', ascending: false);
       final List<dynamic> data = response as List<dynamic>;
       return data.map((json) => _mapJsonToMovie(json)).toList();
     } catch (e) {
       debugPrint('[SupabaseMediaService] fetchMovies error: $e');
+      return [];
+    }
+  }
+
+  /// Fetch dynamic Hero items for the Top Hero Banner from Supabase.
+  Future<List<ModernHeroItem>> fetchHeroItems() async {
+    if (!isReady) return [];
+
+    try {
+      final response = await _client!
+          .from('movies')
+          .select()
+          .eq('is_hero', true)
+          .order('created_at', ascending: false);
+
+      final List<dynamic> data = response as List<dynamic>;
+      if (data.isEmpty) return [];
+
+      return data.map((json) {
+        return ModernHeroItem(
+          id: json['id'] as String? ?? 'hero',
+          title: json['title'] as String? ?? 'Untitled',
+          subtitle: json['synopsis'] as String? ?? '',
+          badgeText: json['badge'] as String? ?? 'LIVE PREMIERE',
+          formatInfo: '4K Ultra HD • Dolby Atmos',
+          imageUrl: json['backdrop_url'] as String? ?? json['poster_url'] as String? ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      debugPrint('[SupabaseMediaService] fetchHeroItems error: $e');
+      return [];
+    }
+  }
+
+  /// Fetch Rail 1: Live Channels & Matches from Supabase.
+  Future<List<LiveMatchItem>> fetchLiveMatches() async {
+    if (!isReady) return [];
+
+    try {
+      final response = await _client!
+          .from('movies')
+          .select()
+          .eq('is_live_match', true)
+          .order('created_at', ascending: false);
+
+      final List<dynamic> data = response as List<dynamic>;
+      if (data.isEmpty) return [];
+
+      return data.map((json) {
+        final title = json['title'] as String? ?? 'Live Match';
+        final isRed = title.toLowerCase().contains('premier') || title.toLowerCase().contains('finals');
+
+        return LiveMatchItem(
+          id: json['id'] as String? ?? 'match',
+          title: title,
+          subtitle: json['synopsis'] as String? ?? 'Live Broadcast',
+          imageUrl: json['backdrop_url'] as String? ?? json['poster_url'] as String? ?? '',
+          isRedBadge: isRed,
+          statusText: 'LIVE',
+          channel: 'Aura Sport 4K',
+        );
+      }).toList();
+    } catch (e) {
+      debugPrint('[SupabaseMediaService] fetchLiveMatches error: $e');
+      return [];
+    }
+  }
+
+  /// Fetch Rail 2: Popular in 4K UHD from Supabase.
+  Future<List<Popular4kItem>> fetchPopular4k() async {
+    if (!isReady) return [];
+
+    try {
+      final response = await _client!
+          .from('movies')
+          .select()
+          .eq('is_popular_4k', true)
+          .order('rating', ascending: false);
+
+      final List<dynamic> data = response as List<dynamic>;
+      if (data.isEmpty) return [];
+
+      return data.map((json) {
+        return Popular4kItem(
+          id: json['id'] as String? ?? 'pop',
+          title: json['title'] as String? ?? 'Untitled',
+          subtitle: json['synopsis'] as String? ?? '4K Ultra HD',
+          tag: json['badge'] as String? ?? 'Tags',
+          imageUrl: json['poster_url'] as String? ?? json['backdrop_url'] as String? ?? '',
+          rating: json['rating'] as String? ?? '9.5',
+          year: json['year'] as String? ?? '2026',
+        );
+      }).toList();
+    } catch (e) {
+      debugPrint('[SupabaseMediaService] fetchPopular4k error: $e');
+      return [];
+    }
+  }
+
+  /// Fetch Top 10 movies ordered by rating.
+  Future<List<Movie>> fetchTop10() async {
+    if (!isReady) return [];
+
+    try {
+      final response = await _client!
+          .from('movies')
+          .select()
+          .order('rating', ascending: false)
+          .limit(10);
+
+      final List<dynamic> data = response as List<dynamic>;
+      return data.asMap().entries.map((entry) {
+        final index = entry.key;
+        final json = entry.value as Map<String, dynamic>;
+        return _mapJsonToMovie(json, rank: index + 1);
+      }).toList();
+    } catch (e) {
+      debugPrint('[SupabaseMediaService] fetchTop10 error: $e');
+      return [];
+    }
+  }
+
+  /// Filter movies by genre from Supabase.
+  Future<List<Movie>> fetchMoviesByGenre(String genre) async {
+    if (!isReady) return [];
+
+    try {
+      final response = await _client!
+          .from('movies')
+          .select()
+          .contains('genres', [genre]);
+
+      final List<dynamic> data = response as List<dynamic>;
+      return data.map((json) => _mapJsonToMovie(json)).toList();
+    } catch (e) {
+      debugPrint('[SupabaseMediaService] fetchMoviesByGenre error: $e');
       return [];
     }
   }
@@ -142,6 +284,7 @@ class SupabaseMediaService {
     Map<String, dynamic> json, {
     double? progress,
     String? remainingTime,
+    int? rank,
   }) {
     List<String> parsedGenres = [];
     if (json['genres'] is List) {
@@ -160,6 +303,7 @@ class SupabaseMediaService {
       maturityRating: json['maturity_rating'] as String? ?? '16+',
       duration: json['duration'] as String? ?? '2h 15m',
       badge: json['badge'] as String?,
+      rank: rank,
       progress: progress,
       remainingTime: remainingTime,
     );

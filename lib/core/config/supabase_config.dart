@@ -9,10 +9,10 @@
 /// high-fidelity local Mock mode with zero errors.
 class SupabaseConfig {
   /// Your Supabase Project URL (e.g. "https://xyzcompany.supabase.co")
-  static const String supabaseUrl = 'YOUR_SUPABASE_URL_HERE';
+  static const String supabaseUrl = 'https://dpivpsnsumkzddhstvfm.supabase.co';
 
   /// Your Supabase anon/public API Key (e.g. "eyJhbGciOi...")
-  static const String supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY_HERE';
+  static const String supabaseAnonKey = 'sb_publishable_bCV-FzL72gviUmIHvKBahA_EWjDeZ3A';
 
   /// Returns true only when real, non-placeholder credentials have been provided.
   static bool get isConfigured {

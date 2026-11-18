@@ -53,9 +53,27 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     if (widget.item != null) {
       _resolvedMovie = widget.item;
       _loadRecommendations();
+      _checkCloudWatchlist();
     } else if (widget.movieId != null) {
       _loadMovieById(widget.movieId!);
     }
+  }
+
+  Future<void> _checkCloudWatchlist() async {
+    final movie = _resolvedMovie;
+    if (movie == null) return;
+    try {
+      final profile = context.read<ProfileProvider>().activeProfile;
+      if (profile != null) {
+        final isSaved = await SupabaseMediaService().isMovieInWatchlist(
+          profileId: profile.id,
+          movieId: movie.id,
+        );
+        if (mounted) {
+          setState(() => _isInWatchlist = isSaved);
+        }
+      }
+    } catch (_) {}
   }
 
   Future<void> _loadRecommendations() async {
@@ -98,6 +116,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         _isLoading = false;
       });
       _loadRecommendations();
+      _checkCloudWatchlist();
     }
   }
 

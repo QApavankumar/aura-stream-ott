@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../core/config/supabase_config.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/router/route_names.dart';
@@ -61,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -118,7 +118,54 @@ class _LoginScreenState extends State<LoginScreen> {
                         showTagline: false,
                         isAnimated: false,
                       ),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 12),
+
+                      // Cloud Connection Status Pill
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: SupabaseConfig.isConfigured
+                              ? AppColors.success.withOpacity(0.12)
+                              : AppColors.kidsModeAmber.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: SupabaseConfig.isConfigured
+                                ? AppColors.success.withOpacity(0.5)
+                                : AppColors.kidsModeAmber.withOpacity(0.5),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: SupabaseConfig.isConfigured
+                                    ? AppColors.success
+                                    : AppColors.kidsModeAmber,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              SupabaseConfig.isConfigured
+                                  ? 'SUPABASE CLOUD: CONNECTED'
+                                  : 'DEMO MODE: LOCAL ENGINE',
+                              style: TextStyle(
+                                color: SupabaseConfig.isConfigured
+                                    ? AppColors.success
+                                    : AppColors.kidsModeAmber,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.6,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
 
                       // Glassmorphic Auth Card
                       FrostedGlass(

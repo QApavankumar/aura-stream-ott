@@ -7,6 +7,7 @@ import '../../core/router/route_names.dart';
 import '../../models/media_item.dart';
 import '../../providers/profile_provider.dart';
 import '../../services/mock_data_service.dart';
+import '../../services/supabase_media_service.dart';
 import '../details/movie_detail_screen.dart';
 import '../../widgets/feed/modern_top_app_bar.dart';
 import '../../widgets/feed/modern_category_hub.dart';
@@ -54,8 +55,14 @@ class HomeScreenFeed extends StatefulWidget {
 typedef HomeFeedScreen = HomeScreenFeed;
 
 class _HomeScreenFeedState extends State<HomeScreenFeed> {
+  final SupabaseMediaService _mediaService = SupabaseMediaService();
   late Future<HomeFeedData> _feedDataFuture;
   String _searchQuery = '';
+
+  late List<ModernHeroItem> _heroItems;
+  late List<LiveMatchItem> _liveMatches;
+  late List<Popular4kItem> _popular4k;
+  List<Movie> _cloudContinueWatching = [];
 
   // Reference Hubs matching the screenshot
   static const List<ModernHubItem> _hubItems = [
@@ -133,8 +140,8 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Reference Hero Items matching the screenshot
-  static const List<ModernHeroItem> _heroItems = [
+  // Default Fallback Hero Items matching the screenshot
+  static const List<ModernHeroItem> _defaultHeroItems = [
     ModernHeroItem(
       id: 'chrono_horizon',
       title: 'CHRONO HORIZON',
@@ -161,8 +168,8 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Rail 1: Live Channels & Matches matching screenshot
-  static const List<LiveMatchItem> _liveMatches = [
+  // Default Fallback Rail 1: Live Channels & Matches matching screenshot
+  static const List<LiveMatchItem> _defaultLiveMatches = [
     LiveMatchItem(
       id: 'live_01',
       title: 'Champions League: Real Madrid vs Man City',
@@ -210,8 +217,8 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Rail 2: Popular in 4K UHD matching screenshot
-  static const List<Popular4kItem> _popular4k = [
+  // Default Fallback Rail 2: Popular in 4K UHD matching screenshot
+  static const List<Popular4kItem> _defaultPopular4k = [
     Popular4kItem(
       id: 'pop_01',
       title: 'Quantum Singularity',
@@ -262,7 +269,39 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
   @override
   void initState() {
     super.initState();
+    _heroItems = List.from(_defaultHeroItems);
+    _liveMatches = List.from(_defaultLiveMatches);
+    _popular4k = List.from(_defaultPopular4k);
     _feedDataFuture = MockDataService.loadHomeFeed();
+    _loadCloudContent();
+  }
+
+  /// Dynamically load live catalog & continue watching from Supabase Cloud
+  Future<void> _loadCloudContent() async {
+    if (!_mediaService.isReady) return;
+
+    try {
+      final cloudHeroes = await _mediaService.fetchHeroItems();
+      final cloudMatches = await _mediaService.fetchLiveMatches();
+      final cloudPopular = await _mediaService.fetchPopular4k();
+
+      final profile = context.read<ProfileProvider>().activeProfile;
+      List<Movie> continueWatching = [];
+      if (profile != null) {
+        continueWatching = await _mediaService.fetchContinueWatching(profileId: profile.id);
+      }
+
+      if (mounted) {
+        setState(() {
+          if (cloudHeroes.isNotEmpty) _heroItems = cloudHeroes;
+          if (cloudMatches.isNotEmpty) _liveMatches = cloudMatches;
+          if (cloudPopular.isNotEmpty) _popular4k = cloudPopular;
+          if (continueWatching.isNotEmpty) _cloudContinueWatching = continueWatching;
+        });
+      }
+    } catch (e) {
+      debugPrint('[HomeScreenFeed] Cloud content fetch error: $e');
+    }
   }
 
   void _navigateToDetail(Movie item) {
@@ -370,12 +409,16 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                 future: _feedDataFuture,
                 builder: (context, snapshot) {
                   final data = snapshot.data;
+                  final continueWatchingList = _cloudContinueWatching.isNotEmpty
+                      ? _cloudContinueWatching
+                      : (data?.continueWatching ?? <Movie>[]);
 
                   return RefreshIndicator(
                     color: AppColors.cyanPrimary,
                     backgroundColor: AppColors.surfaceDark,
                     onRefresh: () async {
                       MockDataService.invalidateCache();
+                      await _loadCloudContent();
                       setState(() {
                         _feedDataFuture = MockDataService.loadHomeFeed();
                       });
@@ -526,8 +569,8 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
 
                           const SizedBox(height: 32),
 
-                          // --- RAIL 3: CONTINUE WATCHING (IF DATA AVAILABLE) ---
-                          if (data != null && data.continueWatching.isNotEmpty) ...[
+                          // --- RAIL 3: CONTINUE WATCHING (CROSS-DEVICE CLOUD SYNC) ---
+                          if (continueWatchingList.isNotEmpty) ...[
                             _buildRailHeader(
                               railTag: 'Rail 3',
                               title: 'Continue Watching',
@@ -540,10 +583,10 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                 padding: const EdgeInsets.symmetric(horizontal: 20),
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount: data.continueWatching.length,
+                                itemCount: continueWatchingList.length,
                                 separatorBuilder: (_, __) => const SizedBox(width: 16),
                                 itemBuilder: (context, index) {
-                                  final item = data.continueWatching[index];
+                                  final item = continueWatchingList[index];
                                   return ContinueWatchingCard(
                                     item: item,
                                     onTap: () => _navigateToDetail(item),

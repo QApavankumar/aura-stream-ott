@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:provider/provider.dart';
 
 import 'package:aura_stream/models/subtitle_data.dart';
 import 'package:aura_stream/models/track_models.dart';
@@ -12,6 +13,8 @@ import 'package:aura_stream/widgets/player/audio_subtitle_drawer.dart';
 import 'package:aura_stream/widgets/player/player_controls.dart';
 import 'package:aura_stream/widgets/player/skip_indicator.dart';
 import 'package:aura_stream/widgets/player/subtitle_overlay.dart';
+import '../../providers/profile_provider.dart';
+import '../../services/supabase_media_service.dart';
 
 /// Fullscreen Landscape Futuristic Video Player Screen
 /// Member 1 Video Player Module for OTT Streaming App
@@ -385,8 +388,30 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     });
   }
 
+  void _syncWatchProgress() {
+    if (_duration.inSeconds <= 0 || _position.inSeconds <= 0) return;
+    try {
+      final progress = (_position.inMilliseconds / _duration.inMilliseconds).clamp(0.0, 1.0);
+      final remainingSecs = (_duration - _position).inSeconds;
+      final remainingMins = (remainingSecs / 60).ceil();
+      final remainingStr = '${remainingMins}m remaining';
+
+      final profile = context.read<ProfileProvider>().activeProfile;
+      if (profile != null) {
+        final id = widget.title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9_]'), '_');
+        SupabaseMediaService().saveWatchProgress(
+          profileId: profile.id,
+          movieId: id,
+          progress: progress,
+          remainingTime: remainingStr,
+        );
+      }
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
+    _syncWatchProgress();
     _cancelAutoHideTimer();
     _subtitleToastTimer?.cancel();
     _controlsFadeController.dispose();
