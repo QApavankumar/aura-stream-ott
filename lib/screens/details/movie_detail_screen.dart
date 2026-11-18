@@ -1,11 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/router/route_names.dart';
 import '../../models/media_item.dart';
+import '../../providers/profile_provider.dart';
 import '../../services/mock_data_service.dart';
+import '../../services/supabase_media_service.dart';
 import '../../widgets/common/frosted_glass.dart';
 import '../../widgets/feed/frosted_glass_card.dart';
 
@@ -170,6 +173,17 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   void _toggleWatchlist() {
     setState(() => _isInWatchlist = !_isInWatchlist);
+
+    // Sync with Supabase Cloud if connected
+    final profile = context.read<ProfileProvider>().activeProfile;
+    final movie = _resolvedMovie;
+    if (profile != null && movie != null) {
+      SupabaseMediaService().toggleWatchlist(
+        profileId: profile.id,
+        movieId: movie.id,
+      );
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: AppColors.surfaceDark,
