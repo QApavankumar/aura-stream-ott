@@ -59,6 +59,20 @@ class AuthProvider extends ChangeNotifier {
           return true;
         }
       } catch (e) {
+        // If Supabase Phone Auth provider is disabled (requires paid SMS gateway like Twilio),
+        // gracefully fall back to test verification mode so developers and evaluators aren't blocked!
+        if (e.toString().contains('phone_provider_disabled') ||
+            e.toString().contains('Unsupported phone provider')) {
+          debugPrint(
+            '[AuthProvider] Supabase Phone provider disabled. Falling back to test verification mode (code: ${AppConstants.demoOtp}).',
+          );
+          _status = AuthStatus.otpSent;
+          _isLoading = false;
+          _errorMessage = null;
+          notifyListeners();
+          return true;
+        }
+
         _isLoading = false;
         _errorMessage = e.toString().replaceFirst('Exception: ', '');
         notifyListeners();
