@@ -13,6 +13,17 @@ class SupabaseMediaService {
 
   bool get isReady => _service.isReady && _client != null;
 
+  /// Stream changes to the movies table for real-time live synchronization.
+  Stream<List<Map<String, dynamic>>>? watchMovies() {
+    if (!isReady) return null;
+    try {
+      return _client!.from('movies').stream(primaryKey: ['id']);
+    } catch (e) {
+      debugPrint('[SupabaseMediaService] watchMovies error: $e');
+      return null;
+    }
+  }
+
   /// Fetch all movies from the Supabase catalog.
   Future<List<Movie>> fetchMovies() async {
     if (!isReady) return [];
@@ -23,7 +34,7 @@ class SupabaseMediaService {
           .select()
           .order('created_at', ascending: false);
       final List<dynamic> data = response as List<dynamic>;
-      return data.map((json) => _mapJsonToMovie(json)).toList();
+      return data.map((json) => _mapJsonToMovie(json as Map<String, dynamic>)).toList();
     } catch (e) {
       debugPrint('[SupabaseMediaService] fetchMovies error: $e');
       return [];
@@ -35,13 +46,23 @@ class SupabaseMediaService {
     if (!isReady) return [];
 
     try {
-      final response = await _client!
+      var response = await _client!
           .from('movies')
           .select()
           .eq('is_hero', true)
           .order('created_at', ascending: false);
 
-      final List<dynamic> data = response as List<dynamic>;
+      var List<dynamic> data = response as List<dynamic>;
+      // If no movies explicitly flagged is_hero, grab first available titles
+      if (data.isEmpty) {
+        response = await _client!
+            .from('movies')
+            .select()
+            .order('created_at', ascending: false)
+            .limit(3);
+        data = response as List<dynamic>;
+      }
+
       if (data.isEmpty) return [];
 
       return data.map((json) {
@@ -99,13 +120,23 @@ class SupabaseMediaService {
     if (!isReady) return [];
 
     try {
-      final response = await _client!
+      var response = await _client!
           .from('movies')
           .select()
           .eq('is_popular_4k', true)
           .order('rating', ascending: false);
 
-      final List<dynamic> data = response as List<dynamic>;
+      var List<dynamic> data = response as List<dynamic>;
+      // Fallback: If no movies are flagged is_popular_4k, return any movies in catalog
+      if (data.isEmpty) {
+        response = await _client!
+            .from('movies')
+            .select()
+            .order('created_at', ascending: false)
+            .limit(10);
+        data = response as List<dynamic>;
+      }
+
       if (data.isEmpty) return [];
 
       return data.map((json) {
@@ -113,7 +144,7 @@ class SupabaseMediaService {
           id: json['id'] as String? ?? 'pop',
           title: json['title'] as String? ?? 'Untitled',
           subtitle: json['synopsis'] as String? ?? '4K Ultra HD',
-          tag: json['badge'] as String? ?? 'Tags',
+          tag: json['badge'] as String? ?? '4K HDR',
           imageUrl: json['poster_url'] as String? ?? json['backdrop_url'] as String? ?? '',
           rating: json['rating'] as String? ?? '9.5',
           year: json['year'] as String? ?? '2026',

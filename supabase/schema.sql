@@ -117,6 +117,13 @@ DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' AND tablename = 'movies'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.movies;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
     WHERE pubname = 'supabase_realtime' AND tablename = 'watch_history'
   ) THEN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.watch_history;

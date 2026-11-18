@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -58,10 +59,12 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
   final SupabaseMediaService _mediaService = SupabaseMediaService();
   late Future<HomeFeedData> _feedDataFuture;
   String _searchQuery = '';
+  StreamSubscription? _moviesSubscription;
 
   late List<ModernHeroItem> _heroItems;
   late List<LiveMatchItem> _liveMatches;
   late List<Popular4kItem> _popular4k;
+  List<Movie> _cloudTop10 = [];
   List<Movie> _cloudContinueWatching = [];
 
   // Reference Hubs matching the screenshot
@@ -274,6 +277,18 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     _popular4k = List.from(_defaultPopular4k);
     _feedDataFuture = MockDataService.loadHomeFeed();
     _loadCloudContent();
+
+    // Listen to real-time changes on the Supabase movies catalog
+    _moviesSubscription = _mediaService.watchMovies()?.listen((_) {
+      debugPrint('[HomeScreenFeed] Real-time Supabase update detected. Reloading feed...');
+      _loadCloudContent();
+    });
+  }
+
+  @override
+  void dispose() {
+    _moviesSubscription?.cancel();
+    super.dispose();
   }
 
   /// Dynamically load live catalog & continue watching from Supabase Cloud
@@ -284,6 +299,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
       final cloudHeroes = await _mediaService.fetchHeroItems();
       final cloudMatches = await _mediaService.fetchLiveMatches();
       final cloudPopular = await _mediaService.fetchPopular4k();
+      final cloudTop10 = await _mediaService.fetchTop10();
 
       final profile = context.read<ProfileProvider>().activeProfile;
       List<Movie> continueWatching = [];
@@ -296,6 +312,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
           if (cloudHeroes.isNotEmpty) _heroItems = cloudHeroes;
           if (cloudMatches.isNotEmpty) _liveMatches = cloudMatches;
           if (cloudPopular.isNotEmpty) _popular4k = cloudPopular;
+          if (cloudTop10.isNotEmpty) _cloudTop10 = cloudTop10;
           if (continueWatching.isNotEmpty) _cloudContinueWatching = continueWatching;
         });
       }
@@ -598,8 +615,11 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                             const SizedBox(height: 32),
                           ],
 
-                          // --- RAIL 4: TOP 10 TODAY (IF DATA AVAILABLE) ---
-                          if (data != null && data.top10.isNotEmpty) ...[
+                          // --- RAIL 4: TOP 10 TODAY (DYNAMIC CLOUD SUPABASE CATALOG) ---
+                          final effectiveTop10 = _cloudTop10.isNotEmpty
+                              ? _cloudTop10
+                              : (data?.top10 ?? <Movie>[]);
+                          if (effectiveTop10.isNotEmpty) ...[
                             _buildRailHeader(
                               railTag: 'Rail 4',
                               title: 'Top 10 Today',
@@ -612,10 +632,10 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                 padding: const EdgeInsets.symmetric(horizontal: 20),
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount: data.top10.length,
+                                itemCount: effectiveTop10.length,
                                 separatorBuilder: (_, __) => const SizedBox(width: 16),
                                 itemBuilder: (context, index) {
-                                  final item = data.top10[index];
+                                  final item = effectiveTop10[index];
                                   return TopTenCard(
                                     item: item,
                                     onTap: () => _navigateToDetail(item),
