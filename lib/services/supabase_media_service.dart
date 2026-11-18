@@ -52,7 +52,7 @@ class SupabaseMediaService {
           .eq('is_hero', true)
           .order('created_at', ascending: false);
 
-      var List<dynamic> data = response as List<dynamic>;
+      List<dynamic> data = response;
       // If no movies explicitly flagged is_hero, grab first available titles
       if (data.isEmpty) {
         response = await _client!
@@ -60,7 +60,7 @@ class SupabaseMediaService {
             .select()
             .order('created_at', ascending: false)
             .limit(3);
-        data = response as List<dynamic>;
+        data = response;
       }
 
       if (data.isEmpty) return [];
@@ -126,7 +126,7 @@ class SupabaseMediaService {
           .eq('is_popular_4k', true)
           .order('rating', ascending: false);
 
-      var List<dynamic> data = response as List<dynamic>;
+      List<dynamic> data = response;
       // Fallback: If no movies are flagged is_popular_4k, return any movies in catalog
       if (data.isEmpty) {
         response = await _client!
@@ -134,7 +134,7 @@ class SupabaseMediaService {
             .select()
             .order('created_at', ascending: false)
             .limit(10);
-        data = response as List<dynamic>;
+        data = response;
       }
 
       if (data.isEmpty) return [];

@@ -429,6 +429,9 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                   final continueWatchingList = _cloudContinueWatching.isNotEmpty
                       ? _cloudContinueWatching
                       : (data?.continueWatching ?? <Movie>[]);
+                  final effectiveTop10 = _cloudTop10.isNotEmpty
+                      ? _cloudTop10
+                      : (data?.top10 ?? <Movie>[]);
 
                   return RefreshIndicator(
                     color: AppColors.cyanPrimary,
@@ -616,9 +619,6 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                           ],
 
                           // --- RAIL 4: TOP 10 TODAY (DYNAMIC CLOUD SUPABASE CATALOG) ---
-                          final effectiveTop10 = _cloudTop10.isNotEmpty
-                              ? _cloudTop10
-                              : (data?.top10 ?? <Movie>[]);
                           if (effectiveTop10.isNotEmpty) ...[
                             _buildRailHeader(
                               railTag: 'Rail 4',
