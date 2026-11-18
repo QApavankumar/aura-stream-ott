@@ -85,31 +85,50 @@ ALTER TABLE public.watchlist ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
 
 -- Movies are publicly readable by any authenticated viewer or guest
+DROP POLICY IF EXISTS "Public Read Movies" ON public.movies;
 CREATE POLICY "Public Read Movies" ON public.movies
     FOR SELECT USING (true);
 
 -- Profiles are isolated per authenticated user
+DROP POLICY IF EXISTS "Users can manage own profiles" ON public.profiles;
 CREATE POLICY "Users can manage own profiles" ON public.profiles
     FOR ALL USING (auth.uid() = user_id);
 
 -- Watch History isolated per user
+DROP POLICY IF EXISTS "Users can manage own watch history" ON public.watch_history;
 CREATE POLICY "Users can manage own watch history" ON public.watch_history
     FOR ALL USING (auth.uid() = user_id);
 
 -- Watchlist isolated per user
+DROP POLICY IF EXISTS "Users can manage own watchlist" ON public.watchlist;
 CREATE POLICY "Users can manage own watchlist" ON public.watchlist
     FOR ALL USING (auth.uid() = user_id);
 
 -- Settings isolated per user
+DROP POLICY IF EXISTS "Users can manage own settings" ON public.user_settings;
 CREATE POLICY "Users can manage own settings" ON public.user_settings
     FOR ALL USING (auth.uid() = user_id);
 
 -- ==============================================================================
 -- REALTIME SUBSCRIPTIONS
 -- ==============================================================================
--- Broadcast watch history & watchlist changes for real-time multi-device sync
-ALTER PUBLICATION supabase_realtime ADD TABLE public.watch_history;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.watchlist;
+-- Broadcast watch history & watchlist changes for real-time multi-device sync safely
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' AND tablename = 'watch_history'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.watch_history;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' AND tablename = 'watchlist'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.watchlist;
+  END IF;
+END $$;
 
 -- ==============================================================================
 -- SEED DATA: PRE-POPULATE HIGH-FIDELITY MOVIES & CHANNELS
