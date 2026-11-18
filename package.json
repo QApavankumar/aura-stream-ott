@@ -1,0 +1,10 @@
+{
+  "name": "aura-stream-ott",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aura Stream - Premium Next-Gen 4K OTT Streaming Platform",
+  "scripts": {
+    "build": "flutter build web --release",
+    "vercel-build": "flutter/bin/flutter build web --release"
+  }
+}
