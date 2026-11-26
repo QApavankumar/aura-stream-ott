@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import '../common/cinema_image.dart';
 
 class LiveMatchItem {
   final String id;
@@ -76,8 +77,8 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      item.imageUrl,
+                    CinemaImage(
+                      imageUrl: item.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) =>
                           Container(color: AppColors.cardSurface),

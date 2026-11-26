@@ -143,35 +143,35 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Default Fallback Hero Items matching the screenshot
+  // Default Hero Items matching the Minimal Cinema Noir Home reference
   static const List<ModernHeroItem> _defaultHeroItems = [
     ModernHeroItem(
-      id: 'chrono_horizon',
-      title: 'CHRONO HORIZON',
-      subtitle: 'The boundaries of space-time shatter in the deep orbit of Saturn.',
-      badgeText: 'LIVE PREMIERE',
-      formatInfo: '4K Ultra HD • Dolby Atmos',
-      imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&q=80',
+      id: 'horizon_zero',
+      title: 'HORIZON ZERO',
+      subtitle: 'A lone deep-space surveyor confronts an ancient obsidian monolith above an uncharted canyon.',
+      badgeText: '4K DOLBY VISION',
+      formatInfo: '2026 • Sci-Fi • 4K Dolby Vision',
+      imageUrl: 'assets/images/hero_horizon_zero.jpg',
     ),
     ModernHeroItem(
-      id: 'cyberpunk_neo',
-      title: 'CYBERPUNK: NEO HORIZON',
-      subtitle: 'A rogue synthetics detective unravels a corporate conspiracy.',
-      badgeText: 'EXCLUSIVE 4K',
-      formatInfo: '4K Ultra HD • HDR10+ • Dolby Vision',
-      imageUrl: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1600&q=80',
+      id: 'solaris',
+      title: 'SOLARIS',
+      subtitle: 'An orbital psychologist encounters living memories orbiting a sentient twin star.',
+      badgeText: 'AURA ORIGINAL',
+      formatInfo: '2026 • Sci-Fi • 4K Dolby Vision',
+      imageUrl: 'assets/images/poster_solaris.jpg',
     ),
     ModernHeroItem(
-      id: 'quantum_singularity',
-      title: 'QUANTUM SINGULARITY',
-      subtitle: 'Theoretical physicists accidentally open a stable wormhole in the Alps.',
-      badgeText: 'TOP #1 TODAY',
-      formatInfo: 'IMAX Enhanced • Dolby Atmos',
-      imageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=1600&q=80',
+      id: 'eclipse',
+      title: 'ECLIPSE',
+      subtitle: 'As the total shadow crosses the outer colonies, humanity races to reignite the solar array.',
+      badgeText: 'IMAX ENHANCED',
+      formatInfo: '2026 • Thriller • Dolby Atmos',
+      imageUrl: 'assets/images/poster_eclipse.jpg',
     ),
   ];
 
-  // Default Fallback Rail 1: Live Channels & Matches matching screenshot
+  // Default Rail 1: Live Channels & Matches
   static const List<LiveMatchItem> _defaultLiveMatches = [
     LiveMatchItem(
       id: 'live_01',
@@ -220,50 +220,50 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Default Fallback Rail 2: Popular in 4K UHD matching screenshot
+  // Featured in 4K Posters matching screenshot (SOLARIS, THE SILENT SEA, ECLIPSE, NOCTURNE, VOYAGER)
   static const List<Popular4kItem> _defaultPopular4k = [
     Popular4kItem(
-      id: 'pop_01',
-      title: 'Quantum Singularity',
-      subtitle: 'Directed by Christopher Nolan',
-      tag: 'Tags',
-      imageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=600&q=80',
+      id: 'pop_solaris',
+      title: 'SOLARIS',
+      subtitle: 'Sci-Fi • 4K Dolby Vision',
+      tag: '4K HDR',
+      imageUrl: 'assets/images/poster_solaris.jpg',
       rating: '9.8',
       year: '2026',
     ),
     Popular4kItem(
-      id: 'pop_02',
-      title: 'Blade of the Ronin',
-      subtitle: 'Feudal Cyberpunk Action',
-      tag: 'Tags',
-      imageUrl: 'https://images.unsplash.com/photo-1514539079130-25950c84af65?w=600&q=80',
+      id: 'pop_silent_sea',
+      title: 'THE SILENT SEA',
+      subtitle: 'Nordic Survival • 4K HDR',
+      tag: '4K HDR',
+      imageUrl: 'assets/images/poster_silent_sea.jpg',
       rating: '9.5',
-      year: '2025',
-    ),
-    Popular4kItem(
-      id: 'pop_03',
-      title: 'Orbital Protocol: Redux',
-      subtitle: 'Sci-Fi Survival Thriller',
-      tag: 'Tags',
-      imageUrl: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80',
-      rating: '9.2',
       year: '2026',
     ),
     Popular4kItem(
-      id: 'pop_04',
-      title: 'Shadow Nexus: 2099',
-      subtitle: 'Underground Synthetic Rebellion',
-      tag: 'Tags',
-      imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&q=80',
+      id: 'pop_eclipse',
+      title: 'ECLIPSE',
+      subtitle: 'Cosmic Thriller • IMAX 4K',
+      tag: 'IMAX 4K',
+      imageUrl: 'assets/images/poster_eclipse.jpg',
       rating: '9.6',
       year: '2026',
     ),
     Popular4kItem(
-      id: 'pop_05',
-      title: 'The Infinite Dimension',
-      subtitle: 'Cosmic Multiverse Odyssey',
-      tag: 'Tags',
-      imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80',
+      id: 'pop_nocturne',
+      title: 'NOCTURNE',
+      subtitle: 'Neo-Noir Mystery • 4K',
+      tag: '4K UHD',
+      imageUrl: 'assets/images/poster_nocturne.jpg',
+      rating: '9.4',
+      year: '2026',
+    ),
+    Popular4kItem(
+      id: 'pop_voyager',
+      title: 'VOYAGER',
+      subtitle: 'Deep Space Odyssey • Atmos',
+      tag: '4K ATMOS',
+      imageUrl: 'assets/images/poster_voyager.jpg',
       rating: '9.9',
       year: '2026',
     ),
@@ -309,9 +309,24 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
 
       if (mounted) {
         setState(() {
-          if (cloudHeroes.isNotEmpty) _heroItems = cloudHeroes;
+          // Keep curated HORIZON ZERO hero + Featured in 4K showcase first,
+          // appending live Supabase entries so DB edits also appear seamlessly.
+          if (cloudHeroes.isNotEmpty) {
+            final extraHeroes = cloudHeroes
+                .where((h) => h.id != _defaultHeroItems.first.id)
+                .toList();
+            _heroItems = [_defaultHeroItems.first, ...extraHeroes];
+          }
           if (cloudMatches.isNotEmpty) _liveMatches = cloudMatches;
-          if (cloudPopular.isNotEmpty) _popular4k = cloudPopular;
+          if (cloudPopular.isNotEmpty) {
+            final knownTitles = _defaultPopular4k
+                .map((e) => e.title.toLowerCase())
+                .toSet();
+            final extraPopular = cloudPopular
+                .where((p) => !knownTitles.contains(p.title.toLowerCase()))
+                .toList();
+            _popular4k = [..._defaultPopular4k, ...extraPopular];
+          }
           if (cloudTop10.isNotEmpty) _cloudTop10 = cloudTop10;
           if (continueWatching.isNotEmpty) _cloudContinueWatching = continueWatching;
         });
@@ -450,7 +465,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // --- EDGE-TO-EDGE NOIR HERO BANNER (PANEL 1) ---
+                          // --- EDGE-TO-EDGE NOIR HERO BANNER (HORIZON ZERO) ---
                           ModernHeroBanner(
                             items: _heroItems,
                             onWatchNow: _onWatchHeroNow,
@@ -460,7 +475,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                   backgroundColor: AppColors.surfaceDark,
                                   behavior: SnackBarBehavior.floating,
                                   duration: const Duration(milliseconds: 1200),
-                                  content: Text('Updated "${hero.title}" in Watchlist'),
+                                  content: Text('Added "${hero.title}" to Watchlist'),
                                 ),
                               );
                             },
@@ -472,18 +487,90 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                 backdropUrl: hero.imageUrl,
                                 posterUrl: hero.imageUrl,
                                 genres: const ['Sci-Fi', 'Action'],
-                                rating: '9.9',
+                                rating: '9.8',
                                 year: '2026',
-                                duration: '2h 30m',
+                                duration: '2h 28m',
                                 maturityRating: '16+',
                               );
                               _navigateToDetail(movie);
                             },
                           ),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 18),
 
-                          // --- CLEAN OBSIDIAN FILTER PILLS ---
+                          // --- RAIL 1: CONTINUE WATCHING (MATCHING SCREENSHOT) ---
+                          if (continueWatchingList.isNotEmpty) ...[
+                            _buildRailHeader(
+                              title: 'Continue Watching',
+                              onTap: () {},
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              height: isDesktop ? 152 : 132,
+                              child: ListView.separated(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isDesktop ? 36 : 20,
+                                ),
+                                scrollDirection: Axis.horizontal,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: continueWatchingList.length,
+                                separatorBuilder: (_, __) => const SizedBox(width: 16),
+                                itemBuilder: (context, index) {
+                                  final item = continueWatchingList[index];
+                                  return ContinueWatchingCard(
+                                    item: item,
+                                    onTap: () => _navigateToDetail(item),
+                                    onPlayTap: () => _onPlayMovie(item),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 22),
+                          ],
+
+                          // --- RAIL 2: FEATURED IN 4K (MATCHING SCREENSHOT) ---
+                          _buildRailHeader(
+                            title: 'Featured in 4K',
+                            onTap: () {},
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            height: isDesktop ? 144 : 124,
+                            child: ListView.separated(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isDesktop ? 36 : 20,
+                              ),
+                              scrollDirection: Axis.horizontal,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: _popular4k.length,
+                              separatorBuilder: (_, __) => const SizedBox(width: 14),
+                              itemBuilder: (context, index) {
+                                final item = _popular4k[index];
+                                return Popular4kCard(
+                                  item: item,
+                                  onTap: () {
+                                    final movie = Movie(
+                                      id: item.id,
+                                      title: item.title,
+                                      synopsis: item.subtitle,
+                                      backdropUrl: item.imageUrl,
+                                      posterUrl: item.imageUrl,
+                                      genres: const ['4K UHD', 'Sci-Fi'],
+                                      rating: item.rating,
+                                      year: item.year,
+                                      duration: '2h 15m',
+                                      maturityRating: '16+',
+                                    );
+                                    _navigateToDetail(movie);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          // --- GENRE FILTER PILLS (BELOW FOLD) ---
                           ModernCategoryHub(
                             items: _hubItems,
                             onSelect: (hub) {
@@ -507,7 +594,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
 
                           const SizedBox(height: 28),
 
-                          // --- RAIL 1: LIVE CHANNELS & SPORTS ---
+                          // --- RAIL 3: LIVE CHANNELS & SPORTS ---
                           _buildRailHeader(
                             railTag: 'LIVE BROADCASTS',
                             title: 'Live Channels & Matches',
@@ -517,7 +604,9 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                           SizedBox(
                             height: 240,
                             child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 24),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isDesktop ? 36 : 20,
+                              ),
                               scrollDirection: Axis.horizontal,
                               physics: const BouncingScrollPhysics(),
                               itemCount: _liveMatches.length,
@@ -546,77 +635,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                             ),
                           ),
 
-                          const SizedBox(height: 36),
-
-                          // --- RAIL 2: FEATURED IN 4K ---
-                          _buildRailHeader(
-                            railTag: '4K DOLBY VISION',
-                            title: 'Featured in 4K',
-                            onTap: () {},
-                          ),
-                          const SizedBox(height: 14),
-                          SizedBox(
-                            height: 306,
-                            child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 24),
-                              scrollDirection: Axis.horizontal,
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: _popular4k.length,
-                              separatorBuilder: (_, __) => const SizedBox(width: 16),
-                              itemBuilder: (context, index) {
-                                final item = _popular4k[index];
-                                return Popular4kCard(
-                                  item: item,
-                                  onTap: () {
-                                    final movie = Movie(
-                                      id: item.id,
-                                      title: item.title,
-                                      synopsis: item.subtitle,
-                                      backdropUrl: item.imageUrl,
-                                      posterUrl: item.imageUrl,
-                                      genres: const ['4K UHD', 'Popular'],
-                                      rating: item.rating,
-                                      year: item.year,
-                                      duration: '2h 15m',
-                                      maturityRating: '16+',
-                                    );
-                                    _navigateToDetail(movie);
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(height: 36),
-
-                          // --- RAIL 3: CONTINUE WATCHING (CROSS-DEVICE CLOUD SYNC) ---
-                          if (continueWatchingList.isNotEmpty) ...[
-                            _buildRailHeader(
-                              railTag: 'RESUME PLAYBACK',
-                              title: 'Continue Watching',
-                              onTap: () {},
-                            ),
-                            const SizedBox(height: 14),
-                            SizedBox(
-                              height: 214,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: continueWatchingList.length,
-                                separatorBuilder: (_, __) => const SizedBox(width: 16),
-                                itemBuilder: (context, index) {
-                                  final item = continueWatchingList[index];
-                                  return ContinueWatchingCard(
-                                    item: item,
-                                    onTap: () => _navigateToDetail(item),
-                                    onPlayTap: () => _onPlayMovie(item),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 36),
-                          ],
+                          const SizedBox(height: 32),
 
                           // --- RAIL 4: TOP 10 TODAY (DYNAMIC CLOUD SUPABASE CATALOG) ---
                           if (effectiveTop10.isNotEmpty) ...[
@@ -629,7 +648,9 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                             SizedBox(
                               height: 286,
                               child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isDesktop ? 36 : 20,
+                                ),
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: effectiveTop10.length,
@@ -658,30 +679,33 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
   }
 
   Widget _buildRailHeader({
-    required String railTag,
+    String? railTag,
     required String title,
     VoidCallback? onTap,
   }) {
+    final isDesktop = MediaQuery.sizeOf(context).width >= 768;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 36 : 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                railTag,
-                style: AppTypography.badge.copyWith(
-                  color: AppColors.textMuted,
-                  fontSize: 10.5,
+              if (railTag != null) ...[
+                Text(
+                  railTag,
+                  style: AppTypography.badge.copyWith(
+                    color: AppColors.textMuted,
+                    fontSize: 10.5,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 3),
+                const SizedBox(height: 2),
+              ],
               Text(
                 title,
-                style: AppTypography.h2.copyWith(fontSize: 20),
+                style: AppTypography.h2.copyWith(fontSize: 19),
               ),
             ],
           ),
@@ -692,7 +716,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
               padding: EdgeInsets.all(4.0),
               child: Icon(
                 Icons.arrow_forward_ios_rounded,
-                size: 14,
+                size: 13,
                 color: AppColors.textSecondary,
               ),
             ),

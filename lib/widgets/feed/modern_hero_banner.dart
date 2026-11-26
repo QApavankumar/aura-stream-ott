@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../common/aura_glow_button.dart';
+import '../common/cinema_image.dart';
 
 class ModernHeroItem {
   final String id;
@@ -22,7 +23,7 @@ class ModernHeroItem {
   });
 }
 
-/// Edge-to-edge full-color cinema hero fading cleanly into #000000 obsidian.
+/// Edge-to-edge Minimal Cinema Noir hero matching the Obsidian reference layout.
 class ModernHeroBanner extends StatefulWidget {
   final List<ModernHeroItem> items;
   final void Function(ModernHeroItem item)? onWatchNow;
@@ -55,7 +56,7 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
   void _startAutoAdvance() {
     _autoTimer?.cancel();
     if (widget.items.length <= 1) return;
-    _autoTimer = Timer.periodic(const Duration(seconds: 7), (_) {
+    _autoTimer = Timer.periodic(const Duration(seconds: 9), (_) {
       if (!mounted || widget.items.isEmpty) return;
       final next = (_currentIndex + 1) % widget.items.length;
       if (_pageController.hasClients) {
@@ -89,7 +90,7 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
 
     final size = MediaQuery.sizeOf(context);
     final isDesktop = size.width >= 768;
-    final bannerHeight = isDesktop ? 560.0 : 450.0;
+    final bannerHeight = isDesktop ? 468.0 : 410.0;
 
     return SizedBox(
       height: bannerHeight,
@@ -102,154 +103,115 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
             onPageChanged: (index) => setState(() => _currentIndex = index),
             itemBuilder: (context, index) {
               final item = widget.items[index];
-              final isLive = item.badgeText.toUpperCase().contains('LIVE');
 
               return GestureDetector(
                 onTap: () => widget.onTap?.call(item),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Full-color theatrical photography
-                    Image.network(
-                      item.imageUrl,
+                    CinemaImage(
+                      imageUrl: item.imageUrl,
                       fit: BoxFit.cover,
+                      alignment: const Alignment(0.12, -0.05),
                       errorBuilder: (_, __, ___) =>
                           Container(color: AppColors.surfaceDark),
                     ),
 
-                    // Subtle side vignette on desktop + deep bottom fade to pure #000000
+                    // Top subtle nav shade + smooth bottom fade to #000000
                     DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withValues(alpha: 0.42),
+                            Colors.black.withValues(alpha: 0.35),
                             Colors.transparent,
-                            Colors.black.withValues(alpha: 0.72),
+                            Colors.black.withValues(alpha: 0.68),
                             AppColors.background,
                           ],
-                          stops: const [0.0, 0.35, 0.72, 1.0],
+                          stops: const [0.0, 0.32, 0.78, 1.0],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
                       ),
                     ),
 
-                    // Left readability scrim
+                    // Subtle left readability vignette
                     DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withValues(alpha: 0.72),
+                            Colors.black.withValues(alpha: 0.58),
                             Colors.transparent,
                           ],
-                          stops: const [0.0, 0.65],
+                          stops: const [0.0, 0.55],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
                       ),
                     ),
 
-                    // Editorial metadata & CTA overlay
+                    // Editorial Title, Spec Line & Action Pills (Screenshot Panel 1)
                     Positioned(
-                      left: isDesktop ? 40 : 20,
-                      right: isDesktop ? 40 : 20,
-                      bottom: 34,
+                      left: isDesktop ? 36 : 20,
+                      right: isDesktop ? 36 : 20,
+                      bottom: isDesktop ? 36 : 24,
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 640),
+                        constraints: const BoxConstraints(maxWidth: 560),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.6),
-                                    borderRadius: BorderRadius.circular(999),
-                                    border: Border.all(
-                                      color: AppColors.glassBorderBright,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (isLive) ...[
-                                        Container(
-                                          width: 6,
-                                          height: 6,
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.liveRed,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                      ],
-                                      Text(
-                                        item.badgeText.toUpperCase(),
-                                        style: AppTypography.badge.copyWith(
-                                          color: AppColors.noirWhite,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  item.formatInfo,
-                                  style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.noirSilver,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 14),
                             Text(
-                              item.title,
+                              item.title.toUpperCase(),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.h1.copyWith(
-                                fontSize: isDesktop ? 48 : 32,
-                                letterSpacing: -1.1,
+                                fontSize: isDesktop ? 44 : 30,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.6,
                                 height: 1.04,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
                             Text(
-                              item.subtitle,
-                              maxLines: 2,
+                              item.formatInfo,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTypography.bodyLarge.copyWith(
+                              style: AppTypography.bodyMedium.copyWith(
                                 color: AppColors.noirSilver,
-                                fontSize: isDesktop ? 15 : 13.5,
+                                fontSize: isDesktop ? 14 : 12.5,
                               ),
                             ),
-                            const SizedBox(height: 22),
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 10,
-                              children: [
-                                AuraGlowButton(
-                                  label: 'Play',
-                                  icon: Icons.play_arrow_rounded,
-                                  height: 46,
-                                  onPressed: () => widget.onWatchNow?.call(item),
-                                ),
-                                AuraGlowButton(
-                                  label: 'Watchlist',
-                                  icon: Icons.add_rounded,
-                                  isSecondary: true,
-                                  height: 46,
-                                  onPressed: () => widget.onAddList?.call(item),
-                                ),
-                              ],
-                            ),
+                            const SizedBox(height: 18),
+                            if (isDesktop)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  AuraGlowButton(
+                                    label: 'Play',
+                                    icon: Icons.play_arrow_rounded,
+                                    height: 42,
+                                    onPressed: () =>
+                                        widget.onWatchNow?.call(item),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  AuraGlowButton(
+                                    label: 'Watchlist',
+                                    icon: Icons.add_rounded,
+                                    isSecondary: true,
+                                    height: 42,
+                                    onPressed: () =>
+                                        widget.onAddList?.call(item),
+                                  ),
+                                ],
+                              )
+                            else
+                              AuraGlowButton(
+                                label: 'Play',
+                                icon: Icons.play_arrow_rounded,
+                                height: 42,
+                                width: double.infinity,
+                                onPressed: () => widget.onWatchNow?.call(item),
+                              ),
                           ],
                         ),
                       ),
@@ -260,11 +222,10 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
             },
           ),
 
-          // Pagination Dots (Bottom-Right)
           if (widget.items.length > 1)
             Positioned(
-              right: isDesktop ? 40 : 20,
-              bottom: 42,
+              right: isDesktop ? 36 : 20,
+              bottom: isDesktop ? 42 : 76,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(widget.items.length, (i) {
@@ -272,7 +233,7 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     margin: const EdgeInsets.only(left: 6),
-                    width: active ? 20 : 6,
+                    width: active ? 18 : 6,
                     height: 6,
                     decoration: BoxDecoration(
                       color: active

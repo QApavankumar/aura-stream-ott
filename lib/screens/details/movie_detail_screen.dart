@@ -9,6 +9,7 @@ import '../../models/media_item.dart';
 import '../../providers/profile_provider.dart';
 import '../../services/mock_data_service.dart';
 import '../../services/supabase_media_service.dart';
+import '../../widgets/common/cinema_image.dart';
 import '../../widgets/common/frosted_glass.dart';
 import '../../widgets/feed/frosted_glass_card.dart';
 
@@ -273,8 +274,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     children: [
                       AspectRatio(
                         aspectRatio: 16 / 9,
-                        child: Image.network(
-                          media.backdropUrl,
+                        child: CinemaImage(
+                          imageUrl: media.backdropUrl,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -487,8 +488,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         SizedBox(
           height: height,
           width: double.infinity,
-          child: Image.network(
-            media.backdropUrl,
+          child: CinemaImage(
+            imageUrl: media.backdropUrl,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
               color: AppColors.surfaceDark,
@@ -1046,8 +1047,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        Image.network(
-                          movie.posterUrl,
+                        CinemaImage(
+                          imageUrl: movie.posterUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
                             color: AppColors.cardSurface,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import '../common/cinema_image.dart';
 
 class Popular4kItem {
   final String id;
@@ -22,7 +23,7 @@ class Popular4kItem {
   });
 }
 
-/// Editorial full-color 4K poster card framed cleanly on pure black.
+/// Editorial Featured in 4K theatrical poster card matching screenshot layout.
 class Popular4kCard extends StatefulWidget {
   final Popular4kItem item;
   final VoidCallback? onTap;
@@ -43,80 +44,76 @@ class _Popular4kCardState extends State<Popular4kCard> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
+    final isDesktop = MediaQuery.sizeOf(context).width >= 768;
+    final cardWidth = isDesktop ? 204.0 : 172.0;
+    final cardHeight = isDesktop ? 138.0 : 118.0;
+    final hasEmbeddedPosterTitle =
+        item.imageUrl.startsWith('assets/images/poster_');
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: SizedBox(
-          width: 176,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 160),
-                height: 248,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceDark,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: _isHovered
-                        ? AppColors.noirWhite
-                        : AppColors.glassBorder,
-                    width: _isHovered ? 1.5 : 1.0,
-                  ),
+    return Tooltip(
+      message: '${item.title} (${item.year})',
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            width: cardWidth,
+            height: cardHeight,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceDark,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _isHovered
+                    ? AppColors.noirWhite
+                    : Colors.white.withValues(alpha: 0.1),
+                width: _isHovered ? 1.5 : 1.0,
+              ),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CinemaImage(
+                  imageUrl: item.imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                      Container(color: AppColors.cardSurface),
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(
-                      item.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          Container(color: AppColors.cardSurface),
-                    ),
-                    Positioned(
-                      top: 10,
-                      left: 10,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.2),
-                          ),
-                        ),
-                        child: Text(
-                          '4K',
-                          style: AppTypography.badge.copyWith(fontSize: 9.5),
-                        ),
+                if (!hasEmbeddedPosterTitle) ...[
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withValues(alpha: 0.65),
+                          Colors.transparent,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                item.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.titleLarge.copyWith(fontSize: 14.5),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '${item.year} • ${item.subtitle}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.bodySmall,
-              ),
-            ],
+                  ),
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    right: 12,
+                    child: Text(
+                      item.title.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.titleLarge.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.8,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ),

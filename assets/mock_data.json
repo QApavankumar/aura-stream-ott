@@ -1,21 +1,21 @@
 {
   "hero": {
-    "id": "hero_01",
-    "title": "CYBERPUNK: NEO HORIZON",
-    "synopsis": "In the submerged megacity of Neo-Bangkok, a rogue synthetics detective unravels a corporate conspiracy that threatens the boundary between human consciousness and quantum artificial intelligence.",
-    "backdropUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1280&q=80",
-    "posterUrl": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80",
+    "id": "horizon_zero",
+    "title": "HORIZON ZERO",
+    "synopsis": "A lone deep-space surveyor confronts an ancient obsidian monolith rising above an uncharted canyon world.",
+    "backdropUrl": "assets/images/hero_horizon_zero.jpg",
+    "posterUrl": "assets/images/poster_solaris.jpg",
     "genres": [
       "Sci-Fi",
-      "Cyberpunk",
-      "Action"
+      "Drama",
+      "4K Dolby Vision"
     ],
-    "rating": "9.6",
+    "rating": "9.8",
     "year": "2026",
-    "maturityRating": "18+",
-    "duration": "2h 35m",
-    "seasonsCount": 3,
-    "badge": "STREAMING NOW IN 4K HDR",
+    "maturityRating": "16+",
+    "duration": "2h 28m",
+    "seasonsCount": 2,
+    "badge": "4K DOLBY VISION",
     "cast": [
       {
         "name": "Takeshi Kaneshiro",
@@ -76,21 +76,21 @@
   "continueWatching": [
     {
       "id": "cw_01",
-      "title": "Orbital Descent",
-      "episodeLabel": "S1 : E4 \u2022 The Void Protocol",
-      "progress": 0.72,
-      "remainingTime": "18m remaining",
-      "backdropUrl": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80",
-      "posterUrl": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80",
+      "title": "Orbital Station",
+      "episodeLabel": "S1 : E4 \u2022 Airlock Nine",
+      "progress": 0.42,
+      "remainingTime": "24m remaining",
+      "backdropUrl": "assets/images/cw_station_corridor.jpg",
+      "posterUrl": "assets/images/cw_station_corridor.jpg",
       "genres": [
         "Sci-Fi",
         "Suspense"
       ],
-      "rating": "8.9",
-      "year": "2025",
+      "rating": "9.1",
+      "year": "2026",
       "maturityRating": "16+",
       "duration": "54m",
-      "synopsis": "As the station breaches atmospheric equilibrium, Dr. Vance races against thermal cascade failure to recover the cryo-vault core.",
+      "synopsis": "As the orbital ring breaches atmospheric equilibrium, Dr. Vance races through Sector 9 to recover the navigation core.",
       "cast": [
         {
           "name": "Takeshi Kaneshiro",
@@ -116,21 +116,21 @@
     },
     {
       "id": "cw_02",
-      "title": "Chrono Drift: Tokyo",
-      "episodeLabel": "S2 : E1 \u2022 Neon Velocity",
-      "progress": 0.45,
-      "remainingTime": "32m remaining",
-      "backdropUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&q=80",
-      "posterUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&q=80",
+      "title": "Neon Night: Tokyo",
+      "episodeLabel": "S2 : E1 \u2022 Rain Sector",
+      "progress": 0.56,
+      "remainingTime": "28m remaining",
+      "backdropUrl": "assets/images/cw_neon_alley.jpg",
+      "posterUrl": "assets/images/cw_neon_alley.jpg",
       "genres": [
-        "Action",
+        "Noir",
         "Sci-Fi"
       ],
-      "rating": "9.1",
+      "rating": "9.2",
       "year": "2026",
       "maturityRating": "16+",
       "duration": "58m",
-      "synopsis": "Midnight racers discover an experimental hyper-drive chip that warps local spacetime during high-speed acceleration through Shinjuku.",
+      "synopsis": "After midnight in Shinjuku's submerged market, an investigator traces an encrypted memory courier.",
       "cast": [
         {
           "name": "Takeshi Kaneshiro",
@@ -156,21 +156,21 @@
     },
     {
       "id": "cw_03",
-      "title": "Abyssal Echoes",
-      "episodeLabel": "S1 : E8 \u2022 The Deep Trench",
-      "progress": 0.88,
-      "remainingTime": "6m remaining",
-      "backdropUrl": "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=600&q=80",
-      "posterUrl": "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=600&q=80",
+      "title": "Dune Horizon",
+      "episodeLabel": "Feature \u2022 Part I",
+      "progress": 0.28,
+      "remainingTime": "1h 42m remaining",
+      "backdropUrl": "assets/images/cw_desert_dunes.jpg",
+      "posterUrl": "assets/images/cw_desert_dunes.jpg",
       "genres": [
-        "Mystery",
-        "Thriller"
+        "Adventure",
+        "Sci-Fi"
       ],
-      "rating": "8.7",
-      "year": "2024",
-      "maturityRating": "18+",
-      "duration": "50m",
-      "synopsis": "Ten kilometers under the Pacific, a research submarine detects an acoustic heartbeat originating from inside an uncharted tectonic fracture.",
+      "rating": "9.5",
+      "year": "2026",
+      "maturityRating": "16+",
+      "duration": "2h 25m",
+      "synopsis": "Across endless amber salt dunes, a nomad caravan follows seismic signals toward an ancient subterranean archive.",
       "cast": [
         {
           "name": "Takeshi Kaneshiro",
@@ -191,6 +191,36 @@
           "name": "Aoi Miyazaki",
           "character": "Special Agent Hana",
           "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80"
+        }
+      ]
+    },
+    {
+      "id": "cw_04",
+      "title": "Shadow Protocol",
+      "episodeLabel": "S1 : E7 \u2022 Black Box",
+      "progress": 0.64,
+      "remainingTime": "19m remaining",
+      "backdropUrl": "assets/images/cw_dark_portrait.jpg",
+      "posterUrl": "assets/images/cw_dark_portrait.jpg",
+      "genres": [
+        "Mystery",
+        "Thriller"
+      ],
+      "rating": "9.0",
+      "year": "2026",
+      "maturityRating": "18+",
+      "duration": "52m",
+      "synopsis": "One witness remembers what happened before the blackout, and every surveillance feed in the city begins erasing itself.",
+      "cast": [
+        {
+          "name": "Takeshi Kaneshiro",
+          "character": "Det. Ren Vance",
+          "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80"
+        },
+        {
+          "name": "Elena Rostova",
+          "character": "Aura AI / Nexus-9",
+          "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80"
         }
       ]
     }

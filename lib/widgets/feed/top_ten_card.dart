@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:aura_stream/models/media_item.dart';
 import 'package:aura_stream/core/theme/app_colors.dart';
 import 'package:aura_stream/core/theme/app_typography.dart';
+import '../common/cinema_image.dart';
 
 /// Editorial Top 10 ranked poster card with bold architectural numeral.
 class TopTenCard extends StatefulWidget {
@@ -72,8 +73,8 @@ class _TopTenCardState extends State<TopTenCard> {
                           ),
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          widget.item.posterUrl,
+                        child: CinemaImage(
+                          imageUrl: widget.item.posterUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) =>
                               Container(color: AppColors.cardSurface),

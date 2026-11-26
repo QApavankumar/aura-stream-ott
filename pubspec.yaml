@@ -35,6 +35,7 @@ flutter:
   assets:
     - design_references/
     - assets/
+    - assets/images/
     - assets/data/
     - assets/data/mock_data.json
     - assets/mock_data.json
