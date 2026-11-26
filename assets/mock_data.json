@@ -313,24 +313,24 @@
       ]
     },
     {
-      "rank": 3,
-      "id": "tyson_naidu",
-      "title": "TYSON NAIDU",
-      "backdropUrl": "assets/images/cinema_action_rise.webp",
-      "posterUrl": "assets/images/cinema_action_rise.webp",
+      "rank": 4,
+      "id": "om_chapter_1",
+      "title": "OM: CHAPTER 1",
+      "backdropUrl": "assets/images/cinema_om.jpg",
+      "posterUrl": "assets/images/cinema_om.jpg",
       "genres": [
         "Action",
         "Crime Thriller"
       ],
-      "rating": "9.1",
+      "rating": "9.4",
       "year": "2026",
       "maturityRating": "16+",
-      "duration": "2h 24m",
-      "synopsis": "A fearless special operations officer leads an intense city-wide crackdown against an underground cartel.",
+      "duration": "2h 28m",
+      "synopsis": "Chapter 1: The Blood Wood — Starring Dhanush, written & directed by Rajkumar Periasamy with music by Sai Abhyankkar.",
       "cast": [
         {
-          "name": "Bellamkonda Sai Sreenivas",
-          "character": "DSP Tyson Naidu",
+          "name": "Dhanush",
+          "character": "Lead",
           "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80"
         }
       ]

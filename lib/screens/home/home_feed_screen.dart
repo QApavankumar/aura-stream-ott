@@ -178,12 +178,12 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
       imageUrl: 'assets/images/cinema_dragon.webp',
     ),
     ModernHeroItem(
-      id: 'tyson_naidu',
-      title: 'TYSON NAIDU',
-      subtitle: 'A relentless special operations officer hunts down an urban syndicate across city borders.',
-      badgeText: 'STREAMING NOW',
+      id: 'om_chapter_1',
+      title: 'OM: CHAPTER 1',
+      subtitle: 'Chapter 1: The Blood Wood — Written & Directed by Rajkumar Periasamy, starring Dhanush.',
+      badgeText: 'AURA EXCLUSIVE',
       formatInfo: '2026 • Action Thriller • 4K Dolby Atmos',
-      imageUrl: 'assets/images/cinema_action_rise.webp',
+      imageUrl: 'assets/images/cinema_om.jpg',
     ),
   ];
 
@@ -311,12 +311,12 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
       year: '2025',
     ),
     Popular4kItem(
-      id: 'tyson_naidu',
-      title: 'TYSON NAIDU',
-      subtitle: 'Action Thriller • Dolby Atmos',
+      id: 'om_chapter_1',
+      title: 'OM: CHAPTER 1',
+      subtitle: 'Chapter 1: The Blood Wood • Dolby Atmos',
       tag: '4K ATMOS',
-      imageUrl: 'assets/images/cinema_action_rise.webp',
-      rating: '9.1',
+      imageUrl: 'assets/images/cinema_om.jpg',
+      rating: '9.4',
       year: '2026',
     ),
   ];
@@ -504,7 +504,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                           m.id == 'baahubali_2' ||
                           m.id == 'ramayana_part1' ||
                           m.id == 'dragon_2025' ||
-                          m.id == 'tyson_naidu')
+                          m.id == 'om_chapter_1')
                       .toList();
                   final effectiveTop10 = _cloudTop10.isNotEmpty
                       ? <Movie>[

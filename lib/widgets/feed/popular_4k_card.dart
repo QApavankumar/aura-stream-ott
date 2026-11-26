@@ -51,7 +51,8 @@ class _Popular4kCardState extends State<Popular4kCard> {
         item.imageUrl.startsWith('assets/images/poster_') ||
         item.imageUrl.contains('cinema_baahubali_poster') ||
         item.imageUrl.contains('cinema_ramayana') ||
-        item.imageUrl.contains('cinema_dragon');
+        item.imageUrl.contains('cinema_dragon') ||
+        item.imageUrl.contains('cinema_om');
 
     return Tooltip(
       message: '${item.title} (${item.year})',
