@@ -48,7 +48,9 @@ class _Popular4kCardState extends State<Popular4kCard> {
     final cardWidth = isDesktop ? 204.0 : 172.0;
     final cardHeight = isDesktop ? 138.0 : 118.0;
     final hasEmbeddedPosterTitle =
-        item.imageUrl.startsWith('assets/images/poster_');
+        item.imageUrl.startsWith('assets/images/poster_') ||
+        item.imageUrl.contains('cinema_ramayana') ||
+        item.imageUrl.contains('cinema_dragon');
 
     return Tooltip(
       message: '${item.title} (${item.year})',
@@ -79,6 +81,9 @@ class _Popular4kCardState extends State<Popular4kCard> {
                 CinemaImage(
                   imageUrl: item.imageUrl,
                   fit: BoxFit.cover,
+                  alignment: item.imageUrl.contains('cinema_')
+                      ? const Alignment(0.0, -0.25)
+                      : Alignment.center,
                   errorBuilder: (_, __, ___) =>
                       Container(color: AppColors.cardSurface),
                 ),
@@ -87,8 +92,8 @@ class _Popular4kCardState extends State<Popular4kCard> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Colors.black.withValues(alpha: 0.65),
                           Colors.transparent,
+                          Colors.black.withValues(alpha: 0.8),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -96,18 +101,18 @@ class _Popular4kCardState extends State<Popular4kCard> {
                     ),
                   ),
                   Positioned(
-                    top: 12,
+                    bottom: 10,
                     left: 12,
                     right: 12,
                     child: Text(
                       item.title.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       style: AppTypography.titleLarge.copyWith(
-                        fontSize: 15,
+                        fontSize: 13.5,
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 1.8,
+                        letterSpacing: 1.1,
                       ),
                     ),
                   ),

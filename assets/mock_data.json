@@ -228,6 +228,81 @@
   "top10": [
     {
       "rank": 1,
+      "id": "ramayana_part1",
+      "title": "RAMAYANA: PART 1",
+      "backdropUrl": "assets/images/cinema_ramayana.jpg",
+      "posterUrl": "assets/images/cinema_ramayana.jpg",
+      "genres": [
+        "Epic",
+        "Mythology",
+        "IMAX"
+      ],
+      "rating": "9.8",
+      "year": "2026",
+      "maturityRating": "U",
+      "duration": "2h 55m",
+      "synopsis": "Namit Malhotra's monumental saga directed by Nitesh Tiwari brings the timeless epic of dharma and courage to IMAX 4K.",
+      "cast": [
+        {
+          "name": "Ranbir Kapoor",
+          "character": "Rama",
+          "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80"
+        },
+        {
+          "name": "Sai Pallavi",
+          "character": "Sita",
+          "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "id": "dragon_2025",
+      "title": "DRAGON",
+      "backdropUrl": "assets/images/cinema_dragon.webp",
+      "posterUrl": "assets/images/cinema_dragon.webp",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ],
+      "rating": "9.3",
+      "year": "2025",
+      "maturityRating": "U/A",
+      "duration": "2h 35m",
+      "synopsis": "A charismatic yet reckless college dropout builds a high-flying career on fabricated credentials until a final reckoning forces him back to finish what he started.",
+      "cast": [
+        {
+          "name": "Pradeep Ranganathan",
+          "character": "Ragavan (Dragon)",
+          "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "id": "tyson_naidu",
+      "title": "TYSON NAIDU",
+      "backdropUrl": "assets/images/cinema_action_rise.webp",
+      "posterUrl": "assets/images/cinema_action_rise.webp",
+      "genres": [
+        "Action",
+        "Crime Thriller"
+      ],
+      "rating": "9.1",
+      "year": "2026",
+      "maturityRating": "16+",
+      "duration": "2h 24m",
+      "synopsis": "A fearless special operations officer leads an intense city-wide crackdown against an underground cartel.",
+      "cast": [
+        {
+          "name": "Bellamkonda Sai Sreenivas",
+          "character": "DSP Tyson Naidu",
+          "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80"
+        }
+      ]
+    },
+    {
+      "rank": 4,
       "id": "top_01",
       "title": "Quantum Singularity",
       "backdropUrl": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=1080&q=80",

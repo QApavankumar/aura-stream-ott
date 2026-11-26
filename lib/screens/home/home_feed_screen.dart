@@ -143,7 +143,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Default Hero Items matching the Minimal Cinema Noir Home reference
+  // Default Hero Carousel Items (HORIZON ZERO + Ramayana + Dragon + Tyson Naidu)
   static const List<ModernHeroItem> _defaultHeroItems = [
     ModernHeroItem(
       id: 'horizon_zero',
@@ -154,20 +154,28 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
       imageUrl: 'assets/images/hero_horizon_zero.jpg',
     ),
     ModernHeroItem(
-      id: 'solaris',
-      title: 'SOLARIS',
-      subtitle: 'An orbital psychologist encounters living memories orbiting a sentient twin star.',
-      badgeText: 'AURA ORIGINAL',
-      formatInfo: '2026 • Sci-Fi • 4K Dolby Vision',
-      imageUrl: 'assets/images/poster_solaris.jpg',
+      id: 'ramayana_part1',
+      title: 'RAMAYANA: PART 1',
+      subtitle: 'The timeless epic of dharma and devotion unfolds on an unprecedented IMAX canvas.',
+      badgeText: 'DIWALI 2026',
+      formatInfo: '2026 • Epic Mythology • Filmed for IMAX',
+      imageUrl: 'assets/images/cinema_ramayana.jpg',
     ),
     ModernHeroItem(
-      id: 'eclipse',
-      title: 'ECLIPSE',
-      subtitle: 'As the total shadow crosses the outer colonies, humanity races to reignite the solar array.',
-      badgeText: 'IMAX ENHANCED',
-      formatInfo: '2026 • Thriller • Dolby Atmos',
-      imageUrl: 'assets/images/poster_eclipse.jpg',
+      id: 'dragon_2025',
+      title: 'DRAGON',
+      subtitle: 'A rebellious college dropout fakes his way up the corporate ladder until his past catches up.',
+      badgeText: 'BLOCKBUSTER',
+      formatInfo: '2025 • Comedy Drama • 4K HDR',
+      imageUrl: 'assets/images/cinema_dragon.webp',
+    ),
+    ModernHeroItem(
+      id: 'tyson_naidu',
+      title: 'TYSON NAIDU',
+      subtitle: 'A relentless special operations officer hunts down an urban syndicate across city borders.',
+      badgeText: 'STREAMING NOW',
+      formatInfo: '2026 • Action Thriller • 4K Dolby Atmos',
+      imageUrl: 'assets/images/cinema_action_rise.webp',
     ),
   ];
 
@@ -267,6 +275,33 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
       rating: '9.9',
       year: '2026',
     ),
+    Popular4kItem(
+      id: 'ramayana_part1',
+      title: 'RAMAYANA: PART 1',
+      subtitle: 'Epic Mythology • Filmed for IMAX',
+      tag: 'IMAX 4K',
+      imageUrl: 'assets/images/cinema_ramayana.jpg',
+      rating: '9.8',
+      year: '2026',
+    ),
+    Popular4kItem(
+      id: 'dragon_2025',
+      title: 'DRAGON',
+      subtitle: 'Comedy Drama • 4K HDR',
+      tag: '4K HDR',
+      imageUrl: 'assets/images/cinema_dragon.webp',
+      rating: '9.3',
+      year: '2025',
+    ),
+    Popular4kItem(
+      id: 'tyson_naidu',
+      title: 'TYSON NAIDU',
+      subtitle: 'Action Thriller • Dolby Atmos',
+      tag: '4K ATMOS',
+      imageUrl: 'assets/images/cinema_action_rise.webp',
+      rating: '9.1',
+      year: '2026',
+    ),
   ];
 
   @override
@@ -312,10 +347,11 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
           // Keep curated HORIZON ZERO hero + Featured in 4K showcase first,
           // appending live Supabase entries so DB edits also appear seamlessly.
           if (cloudHeroes.isNotEmpty) {
+            final knownIds = _defaultHeroItems.map((h) => h.id).toSet();
             final extraHeroes = cloudHeroes
-                .where((h) => h.id != _defaultHeroItems.first.id)
+                .where((h) => !knownIds.contains(h.id))
                 .toList();
-            _heroItems = [_defaultHeroItems.first, ...extraHeroes];
+            _heroItems = [..._defaultHeroItems, ...extraHeroes];
           }
           if (cloudMatches.isNotEmpty) _liveMatches = cloudMatches;
           if (cloudPopular.isNotEmpty) {
@@ -445,9 +481,44 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                   final continueWatchingList = _cloudContinueWatching.isNotEmpty
                       ? _cloudContinueWatching
                       : (data?.continueWatching ?? <Movie>[]);
+                  final baseTop = data?.top10 ?? <Movie>[];
+                  final featuredNew = baseTop
+                      .where((m) =>
+                          m.id == 'ramayana_part1' ||
+                          m.id == 'dragon_2025' ||
+                          m.id == 'tyson_naidu')
+                      .toList();
                   final effectiveTop10 = _cloudTop10.isNotEmpty
-                      ? _cloudTop10
-                      : (data?.top10 ?? <Movie>[]);
+                      ? <Movie>[
+                          ...featuredNew,
+                          ..._cloudTop10.where((c) => !featuredNew
+                              .any((f) => f.title.toLowerCase() == c.title.toLowerCase())),
+                        ]
+                          .take(10)
+                          .toList()
+                          .asMap()
+                          .entries
+                          .map((e) => Movie(
+                                id: e.value.id,
+                                title: e.value.title,
+                                synopsis: e.value.synopsis,
+                                backdropUrl: e.value.backdropUrl,
+                                posterUrl: e.value.posterUrl,
+                                genres: e.value.genres,
+                                rating: e.value.rating,
+                                year: e.value.year,
+                                maturityRating: e.value.maturityRating,
+                                duration: e.value.duration,
+                                rank: e.key + 1,
+                                progress: e.value.progress,
+                                episodeLabel: e.value.episodeLabel,
+                                remainingTime: e.value.remainingTime,
+                                badge: e.value.badge,
+                                seasons: e.value.seasons,
+                                cast: e.value.cast,
+                              ))
+                          .toList()
+                      : baseTop;
 
                   return RefreshIndicator(
                     color: AppColors.noirWhite,

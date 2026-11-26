@@ -23,7 +23,7 @@ class ModernHeroItem {
   });
 }
 
-/// Edge-to-edge Minimal Cinema Noir hero matching the Obsidian reference layout.
+/// Edge-to-edge Minimal Cinema Noir hero carousel with interactive controls.
 class ModernHeroBanner extends StatefulWidget {
   final List<ModernHeroItem> items;
   final void Function(ModernHeroItem item)? onWatchNow;
@@ -56,17 +56,21 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
   void _startAutoAdvance() {
     _autoTimer?.cancel();
     if (widget.items.length <= 1) return;
-    _autoTimer = Timer.periodic(const Duration(seconds: 9), (_) {
+    _autoTimer = Timer.periodic(const Duration(seconds: 6), (_) {
       if (!mounted || widget.items.isEmpty) return;
-      final next = (_currentIndex + 1) % widget.items.length;
-      if (_pageController.hasClients) {
-        _pageController.animateToPage(
-          next,
-          duration: const Duration(milliseconds: 650),
-          curve: Curves.easeOutCubic,
-        );
-      }
+      _goToPage((_currentIndex + 1) % widget.items.length);
     });
+  }
+
+  void _goToPage(int index) {
+    if (!mounted || widget.items.isEmpty) return;
+    if (_pageController.hasClients) {
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 550),
+        curve: Curves.easeOutCubic,
+      );
+    }
   }
 
   @override
@@ -82,6 +86,13 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
     _autoTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  Alignment _alignmentFor(String imageUrl) {
+    if (imageUrl.contains('cinema_')) {
+      return const Alignment(0.0, -0.22);
+    }
+    return const Alignment(0.12, -0.05);
   }
 
   @override
@@ -112,7 +123,7 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
                     CinemaImage(
                       imageUrl: item.imageUrl,
                       fit: BoxFit.cover,
-                      alignment: const Alignment(0.12, -0.05),
+                      alignment: _alignmentFor(item.imageUrl),
                       errorBuilder: (_, __, ___) =>
                           Container(color: AppColors.surfaceDark),
                     ),
@@ -122,12 +133,12 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withValues(alpha: 0.35),
+                            Colors.black.withValues(alpha: 0.42),
                             Colors.transparent,
-                            Colors.black.withValues(alpha: 0.68),
+                            Colors.black.withValues(alpha: 0.72),
                             AppColors.background,
                           ],
-                          stops: const [0.0, 0.32, 0.78, 1.0],
+                          stops: const [0.0, 0.32, 0.76, 1.0],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -139,23 +150,23 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withValues(alpha: 0.58),
+                            Colors.black.withValues(alpha: 0.62),
                             Colors.transparent,
                           ],
-                          stops: const [0.0, 0.55],
+                          stops: const [0.0, 0.58],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
                       ),
                     ),
 
-                    // Editorial Title, Spec Line & Action Pills (Screenshot Panel 1)
+                    // Editorial Title, Spec Line & Action Pills
                     Positioned(
                       left: isDesktop ? 36 : 20,
                       right: isDesktop ? 36 : 20,
                       bottom: isDesktop ? 36 : 24,
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 560),
+                        constraints: const BoxConstraints(maxWidth: 580),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
@@ -165,7 +176,7 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.h1.copyWith(
-                                fontSize: isDesktop ? 44 : 30,
+                                fontSize: isDesktop ? 42 : 28,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: -0.6,
                                 height: 1.04,
@@ -222,30 +233,91 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
             },
           ),
 
+          // Carousel Arrows + Clickable Dots (Bottom-Right)
           if (widget.items.length > 1)
             Positioned(
               right: isDesktop ? 36 : 20,
-              bottom: isDesktop ? 42 : 76,
+              bottom: isDesktop ? 38 : 76,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: List.generate(widget.items.length, (i) {
-                  final active = i == _currentIndex;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    margin: const EdgeInsets.only(left: 6),
-                    width: active ? 18 : 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: active
-                          ? AppColors.noirWhite
-                          : Colors.white.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(999),
+                children: [
+                  if (isDesktop) ...[
+                    _CarouselArrowButton(
+                      icon: Icons.chevron_left_rounded,
+                      onTap: () {
+                        final prev =
+                            (_currentIndex - 1 + widget.items.length) %
+                                widget.items.length;
+                        _goToPage(prev);
+                      },
                     ),
-                  );
-                }),
+                    const SizedBox(width: 8),
+                  ],
+                  ...List.generate(widget.items.length, (i) {
+                    final active = i == _currentIndex;
+                    return GestureDetector(
+                      onTap: () => _goToPage(i),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: active ? 20 : 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          color: active
+                              ? AppColors.noirWhite
+                              : Colors.white.withValues(alpha: 0.32),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    );
+                  }),
+                  if (isDesktop) ...[
+                    const SizedBox(width: 8),
+                    _CarouselArrowButton(
+                      icon: Icons.chevron_right_rounded,
+                      onTap: () {
+                        final next =
+                            (_currentIndex + 1) % widget.items.length;
+                        _goToPage(next);
+                      },
+                    ),
+                  ],
+                ],
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _CarouselArrowButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _CarouselArrowButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: const Color(0x9918181B),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.22),
+            ),
+          ),
+          child: Icon(icon, size: 18, color: Colors.white),
+        ),
       ),
     );
   }
