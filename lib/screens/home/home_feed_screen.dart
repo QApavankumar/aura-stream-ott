@@ -143,8 +143,16 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Default Hero Carousel Items (HORIZON ZERO + Ramayana + Dragon + Tyson Naidu)
+  // Default Hero Carousel Items (Baahubali 2 as 1st slide + Horizon Zero + Ramayana + Dragon + Tyson Naidu)
   static const List<ModernHeroItem> _defaultHeroItems = [
+    ModernHeroItem(
+      id: 'baahubali_2',
+      title: 'BAAHUBALI 2: THE CONCLUSION',
+      subtitle: 'When Shiva, the son of Bahubali, learns about his heritage, he begins to look for answers in Mahishmati.',
+      badgeText: 'BLOCKBUSTER 4K',
+      formatInfo: '2017 • Epic Action Drama • 4K Dolby Atmos',
+      imageUrl: 'assets/images/cinema_baahubali_hero.webp',
+    ),
     ModernHeroItem(
       id: 'horizon_zero',
       title: 'HORIZON ZERO',
@@ -228,8 +236,17 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     ),
   ];
 
-  // Featured in 4K Posters matching screenshot (SOLARIS, THE SILENT SEA, ECLIPSE, NOCTURNE, VOYAGER)
+  // Featured in 4K Posters matching screenshot (SOLARIS, THE SILENT SEA, ECLIPSE, NOCTURNE, VOYAGER + Baahubali 2 + Ramayana + Dragon + Tyson Naidu)
   static const List<Popular4kItem> _defaultPopular4k = [
+    Popular4kItem(
+      id: 'baahubali_2',
+      title: 'BAAHUBALI 2: THE CONCLUSION',
+      subtitle: 'Epic Action Drama • 4K Atmos',
+      tag: '4K ATMOS',
+      imageUrl: 'assets/images/cinema_baahubali_poster.jpg',
+      rating: '9.9',
+      year: '2017',
+    ),
     Popular4kItem(
       id: 'pop_solaris',
       title: 'SOLARIS',
@@ -484,6 +501,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                   final baseTop = data?.top10 ?? <Movie>[];
                   final featuredNew = baseTop
                       .where((m) =>
+                          m.id == 'baahubali_2' ||
                           m.id == 'ramayana_part1' ||
                           m.id == 'dragon_2025' ||
                           m.id == 'tyson_naidu')
@@ -624,7 +642,9 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                       id: item.id,
                                       title: item.title,
                                       synopsis: item.subtitle,
-                                      backdropUrl: item.imageUrl,
+                                      backdropUrl: item.id == 'baahubali_2'
+                                          ? 'assets/images/cinema_baahubali_hero.webp'
+                                          : item.imageUrl,
                                       posterUrl: item.imageUrl,
                                       genres: const ['4K UHD', 'Sci-Fi'],
                                       rating: item.rating,

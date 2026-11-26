@@ -228,6 +228,40 @@
   "top10": [
     {
       "rank": 1,
+      "id": "baahubali_2",
+      "title": "BAAHUBALI 2: THE CONCLUSION",
+      "backdropUrl": "assets/images/cinema_baahubali_hero.webp",
+      "posterUrl": "assets/images/cinema_baahubali_poster.jpg",
+      "genres": [
+        "Epic",
+        "Action",
+        "Drama"
+      ],
+      "rating": "9.9",
+      "year": "2017",
+      "maturityRating": "U/A",
+      "duration": "2h 47m",
+      "synopsis": "Kattappa narrates the epic story of Amarendra Baahubali, his triumph in Mahishmati, and the betrayal that set Mahendra Baahubali's destiny into motion.",
+      "cast": [
+        {
+          "name": "Prabhas",
+          "character": "Amarendra / Mahendra Baahubali",
+          "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80"
+        },
+        {
+          "name": "Anushka Shetty",
+          "character": "Devasena",
+          "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80"
+        },
+        {
+          "name": "Rana Daggubati",
+          "character": "Bhallaladeva",
+          "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80"
+        }
+      ]
+    },
+    {
+      "rank": 2,
       "id": "ramayana_part1",
       "title": "RAMAYANA: PART 1",
       "backdropUrl": "assets/images/cinema_ramayana.jpg",

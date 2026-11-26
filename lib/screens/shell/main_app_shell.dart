@@ -76,6 +76,18 @@ class _MainAppShellState extends State<MainAppShell> {
       ...data.continueWatching,
       ...data.top10,
       const Movie(
+        id: 'baahubali_2',
+        title: 'BAAHUBALI 2: THE CONCLUSION',
+        synopsis: 'When Shiva, the son of Bahubali, learns about his heritage, he begins to look for answers in the kingdom of Mahishmati.',
+        backdropUrl: 'assets/images/cinema_baahubali_hero.webp',
+        posterUrl: 'assets/images/cinema_baahubali_poster.jpg',
+        genres: ['Epic', 'Action', 'Drama'],
+        rating: '9.9',
+        year: '2017',
+        maturityRating: 'U/A',
+        duration: '2h 47m',
+      ),
+      const Movie(
         id: 'ramayana_part1',
         title: 'RAMAYANA: PART 1',
         synopsis: 'The timeless epic of dharma and devotion unfolds on an unprecedented IMAX canvas.',

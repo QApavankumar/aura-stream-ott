@@ -49,6 +49,7 @@ class _Popular4kCardState extends State<Popular4kCard> {
     final cardHeight = isDesktop ? 138.0 : 118.0;
     final hasEmbeddedPosterTitle =
         item.imageUrl.startsWith('assets/images/poster_') ||
+        item.imageUrl.contains('cinema_baahubali_poster') ||
         item.imageUrl.contains('cinema_ramayana') ||
         item.imageUrl.contains('cinema_dragon');
 
