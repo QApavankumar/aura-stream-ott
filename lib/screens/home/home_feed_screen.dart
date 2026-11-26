@@ -167,7 +167,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
       subtitle: 'The timeless epic of dharma and devotion unfolds on an unprecedented IMAX canvas.',
       badgeText: 'DIWALI 2026',
       formatInfo: '2026 • Epic Mythology • Filmed for IMAX',
-      imageUrl: 'assets/images/cinema_ramayana.jpg',
+      imageUrl: 'assets/images/cinema_ramayana_hero.jpg',
     ),
     ModernHeroItem(
       id: 'dragon_2025',
@@ -644,7 +644,9 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                       synopsis: item.subtitle,
                                       backdropUrl: item.id == 'baahubali_2'
                                           ? 'assets/images/cinema_baahubali_hero.webp'
-                                          : item.imageUrl,
+                                          : item.id == 'ramayana_part1'
+                                              ? 'assets/images/cinema_ramayana_hero.jpg'
+                                              : item.imageUrl,
                                       posterUrl: item.imageUrl,
                                       genres: const ['4K UHD', 'Sci-Fi'],
                                       rating: item.rating,

@@ -89,6 +89,9 @@ class _ModernHeroBannerState extends State<ModernHeroBanner> {
   }
 
   Alignment _alignmentFor(String imageUrl) {
+    if (imageUrl.contains('cinema_ramayana_hero')) {
+      return const Alignment(0.0, -0.65);
+    }
     if (imageUrl.contains('cinema_')) {
       return const Alignment(0.0, -0.22);
     }

@@ -91,7 +91,7 @@ class _MainAppShellState extends State<MainAppShell> {
         id: 'ramayana_part1',
         title: 'RAMAYANA: PART 1',
         synopsis: 'The timeless epic of dharma and devotion unfolds on an unprecedented IMAX canvas.',
-        backdropUrl: 'assets/images/cinema_ramayana.jpg',
+        backdropUrl: 'assets/images/cinema_ramayana_hero.jpg',
         posterUrl: 'assets/images/cinema_ramayana.jpg',
         genres: ['Epic', 'Mythology', 'IMAX 4K'],
         rating: '9.8',
