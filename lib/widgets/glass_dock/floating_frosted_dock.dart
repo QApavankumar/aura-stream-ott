@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_typography.dart';
 import 'dock_item.dart';
 
+/// Minimal Cinema Noir mobile bottom tab pill bar.
 class FloatingFrostedDock extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabSelected;
@@ -25,43 +27,34 @@ class FloatingFrostedDock extends StatelessWidget {
         padding: EdgeInsets.only(
           left: 16,
           right: 16,
-          bottom: bottomPadding > 0 ? bottomPadding + 6 : 18,
+          bottom: bottomPadding > 0 ? bottomPadding + 8 : 14,
         ),
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 340),
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.7),
-                blurRadius: 36,
-                offset: const Offset(0, 12),
-              ),
-              BoxShadow(
-                color: AppColors.cyanPrimary.withOpacity(0.2),
-                blurRadius: 28,
-                spreadRadius: -2,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 440),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(28),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                height: 62,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xB80E1422),
+                  color: const Color(0xE6111114),
                   borderRadius: BorderRadius.circular(28),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.18),
+                    color: AppColors.glassBorderBright,
                     width: 1.0,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.65),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: List.generate(items.length, (index) {
                     final item = items[index];
                     final isSelected = index == currentIndex;
@@ -101,7 +94,7 @@ class _DockTabButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
           padding: EdgeInsets.symmetric(
             horizontal: isSelected ? 14 : 10,
@@ -110,23 +103,8 @@ class _DockTabButton extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: isSelected
-                ? AppColors.cyanPrimary.withOpacity(0.15)
+                ? Colors.white.withValues(alpha: 0.14)
                 : Colors.transparent,
-            border: isSelected
-                ? Border.all(
-                    color: AppColors.cyanPrimary.withOpacity(0.5),
-                    width: 1.0,
-                  )
-                : null,
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: AppColors.cyanPrimary.withOpacity(0.35),
-                      blurRadius: 14,
-                      spreadRadius: -1,
-                    ),
-                  ]
-                : null,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -134,27 +112,22 @@ class _DockTabButton extends StatelessWidget {
             children: [
               Icon(
                 isSelected ? item.activeIcon : item.icon,
-                size: 21,
-                color: isSelected ? AppColors.cyanPrimary : Colors.white60,
+                size: 20,
+                color: isSelected
+                    ? AppColors.noirWhite
+                    : AppColors.textMuted,
               ),
-              if (isSelected) ...[
-                const SizedBox(height: 3),
-                Container(
-                  width: 12,
-                  height: 2.5,
-                  decoration: BoxDecoration(
-                    color: AppColors.cyanPrimary,
-                    borderRadius: BorderRadius.circular(2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.cyanPrimary.withOpacity(0.9),
-                        blurRadius: 6,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
+              const SizedBox(height: 3),
+              Text(
+                item.label,
+                style: AppTypography.dockLabel.copyWith(
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected
+                      ? AppColors.noirWhite
+                      : AppColors.textMuted,
                 ),
-              ],
+              ),
             ],
           ),
         ),

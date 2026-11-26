@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import 'frosted_glass.dart';
 
+/// Crisp obsidian form field with white focus border and subtle hairline resting border.
 class AuraTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
@@ -40,99 +40,107 @@ class _AuraTextFieldState extends State<AuraTextField> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() {
-      setState(() {
-        _isFocused = _focusNode.hasFocus;
-      });
-    });
+    _focusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (mounted) {
+      setState(() => _isFocused = _focusNode.hasFocus);
+    }
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
+    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
+    final borderColor = hasError
+        ? AppColors.error
+        : _isFocused
+            ? AppColors.noirWhite
+            : AppColors.glassBorder;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.labelText != null) ...[
           Text(
             widget.labelText!,
             style: AppTypography.bodySmall.copyWith(
-              color: hasError
-                  ? AppColors.error
-                  : (_isFocused ? AppColors.cyanPrimary : AppColors.textSecondary),
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
             ),
           ),
           const SizedBox(height: 8),
         ],
         AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 160),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: _isFocused
-                ? [
-                    BoxShadow(
-                      color: AppColors.cyanPrimary.withOpacity(0.2),
-                      blurRadius: 16,
-                      spreadRadius: 1,
-                    )
-                  ]
-                : null,
-          ),
-          child: FrostedGlass(
-            borderRadius: 16,
-            blur: 14,
-            backgroundColor: _isFocused
-                ? AppColors.cardSurface.withOpacity(0.85)
-                : AppColors.cardSurface.withOpacity(0.55),
+            color: AppColors.surfaceDark,
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: hasError
-                  ? AppColors.error
-                  : (_isFocused ? AppColors.cyanPrimary : AppColors.glassBorder),
-              width: _isFocused ? 1.5 : 1.0,
+              color: borderColor,
+              width: _isFocused || hasError ? 1.5 : 1.0,
             ),
-            child: TextField(
-              controller: widget.controller,
-              focusNode: _focusNode,
-              keyboardType: widget.keyboardType,
-              obscureText: widget.obscureText,
-              style: AppTypography.bodyLarge.copyWith(color: AppColors.textPrimary),
-              cursorColor: AppColors.cyanPrimary,
-              onChanged: widget.onChanged,
-              onSubmitted: widget.onSubmitted,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                border: InputBorder.none,
-                hintText: widget.hintText,
-                hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textMuted),
-                prefixIcon: widget.prefixIcon != null
-                    ? Icon(
-                        widget.prefixIcon,
-                        color: _isFocused ? AppColors.cyanPrimary : AppColors.textMuted,
-                        size: 20,
-                      )
-                    : null,
-                suffixIcon: widget.suffix,
+          ),
+          child: Row(
+            children: [
+              if (widget.prefixIcon != null) ...[
+                const SizedBox(width: 14),
+                Icon(
+                  widget.prefixIcon,
+                  size: 18,
+                  color: _isFocused
+                      ? AppColors.textPrimary
+                      : AppColors.textSecondary,
+                ),
+              ],
+              Expanded(
+                child: TextField(
+                  controller: widget.controller,
+                  focusNode: _focusNode,
+                  keyboardType: widget.keyboardType,
+                  obscureText: widget.obscureText,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
+                  cursorColor: AppColors.noirWhite,
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                  decoration: InputDecoration(
+                    filled: false,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: widget.prefixIcon != null ? 12 : 16,
+                      vertical: 15,
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    hintText: widget.hintText,
+                    hintStyle: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              if (widget.suffix != null) ...[
+                widget.suffix!,
+                const SizedBox(width: 8),
+              ],
+            ],
           ),
         ),
         if (hasError) ...[
           const SizedBox(height: 6),
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Text(
-              widget.errorText!,
-              style: AppTypography.bodySmall.copyWith(color: AppColors.error),
-            ),
+          Text(
+            widget.errorText!,
+            style: AppTypography.bodySmall.copyWith(color: AppColors.error),
           ),
         ],
       ],

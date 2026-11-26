@@ -2,99 +2,96 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
+/// Editorial Cinema Noir typography scale built on Inter & Outfit.
 class AppTypography {
-  // Brand Header
-  static TextStyle brandLogo({double fontSize = 28, double letterSpacing = 3.5}) {
-    return GoogleFonts.orbitron(
-      fontSize: fontSize,
-      fontWeight: FontWeight.w800,
-      letterSpacing: letterSpacing,
-      color: AppColors.cyanPrimary,
-      shadows: const [
-        Shadow(
-          color: AppColors.cyanPrimary,
-          blurRadius: 18,
-        ),
-        Shadow(
-          color: AppColors.cyanNeon,
-          blurRadius: 36,
-        ),
-      ],
-    );
-  }
+  AppTypography._();
 
-  // Headings
-  static TextStyle h1 = GoogleFonts.outfit(
-    fontSize: 32,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.5,
-    color: AppColors.textPrimary,
-  );
+  static TextStyle brandLogo({
+    double fontSize = 24,
+    double letterSpacing = 4.5,
+  }) =>
+      GoogleFonts.outfit(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w800,
+        letterSpacing: letterSpacing,
+        color: AppColors.textPrimary,
+      );
 
-  static TextStyle h2 = GoogleFonts.outfit(
-    fontSize: 24,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.3,
-    color: AppColors.textPrimary,
-  );
+  static TextStyle get h1 => GoogleFonts.inter(
+        fontSize: 34,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.9,
+        height: 1.12,
+        color: AppColors.textPrimary,
+      );
 
-  static TextStyle h3 = GoogleFonts.outfit(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
-  );
+  static TextStyle get h2 => GoogleFonts.inter(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.45,
+        height: 1.2,
+        color: AppColors.textPrimary,
+      );
 
-  // Subtitles & Section Titles
-  static TextStyle titleLarge = GoogleFonts.outfit(
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
-  );
+  static TextStyle get h3 => GoogleFonts.inter(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.25,
+        height: 1.25,
+        color: AppColors.textPrimary,
+      );
 
-  static TextStyle titleMedium = GoogleFonts.outfit(
-    fontSize: 15,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.2,
-    color: AppColors.textPrimary,
-  );
+  static TextStyle get titleLarge => GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.15,
+        color: AppColors.textPrimary,
+      );
 
-  // Body Texts
-  static TextStyle bodyLarge = GoogleFonts.inter(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textPrimary,
-  );
+  static TextStyle get titleMedium => GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textPrimary,
+      );
 
-  static TextStyle bodyMedium = GoogleFonts.inter(
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textSecondary,
-  );
+  static TextStyle get bodyLarge => GoogleFonts.inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+        color: AppColors.textSecondary,
+      );
 
-  static TextStyle bodySmall = GoogleFonts.inter(
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textMuted,
-  );
+  static TextStyle get bodyMedium => GoogleFonts.inter(
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+        height: 1.45,
+        color: AppColors.textSecondary,
+      );
 
-  // Badges & Buttons
-  static TextStyle button = GoogleFonts.outfit(
-    fontSize: 15,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.5,
-    color: Colors.black,
-  );
+  static TextStyle get bodySmall => GoogleFonts.inter(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textMuted,
+      );
 
-  static TextStyle dockLabel = GoogleFonts.inter(
-    fontSize: 11,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.3,
-  );
+  static TextStyle get button => GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.1,
+        color: AppColors.background,
+      );
 
-  static TextStyle badge = GoogleFonts.inter(
-    fontSize: 11,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.8,
-    color: Colors.white,
-  );
+  static TextStyle get dockLabel => GoogleFonts.inter(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.1,
+        color: AppColors.textSecondary,
+      );
+
+  static TextStyle get badge => GoogleFonts.inter(
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.9,
+        color: AppColors.textPrimary,
+      );
 }

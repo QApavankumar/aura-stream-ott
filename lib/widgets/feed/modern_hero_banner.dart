@@ -1,7 +1,8 @@
-import 'dart:ui';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import '../common/aura_glow_button.dart';
 
 class ModernHeroItem {
   final String id;
@@ -21,6 +22,7 @@ class ModernHeroItem {
   });
 }
 
+/// Edge-to-edge full-color cinema hero fading cleanly into #000000 obsidian.
 class ModernHeroBanner extends StatefulWidget {
   final List<ModernHeroItem> items;
   final void Function(ModernHeroItem item)? onWatchNow;
@@ -40,403 +42,249 @@ class ModernHeroBanner extends StatefulWidget {
 }
 
 class _ModernHeroBannerState extends State<ModernHeroBanner> {
-  late final PageController _pageController;
+  final PageController _pageController = PageController();
   int _currentIndex = 0;
-  final Set<String> _inListIds = {};
+  Timer? _autoTimer;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _startAutoAdvance();
+  }
+
+  void _startAutoAdvance() {
+    _autoTimer?.cancel();
+    if (widget.items.length <= 1) return;
+    _autoTimer = Timer.periodic(const Duration(seconds: 7), (_) {
+      if (!mounted || widget.items.isEmpty) return;
+      final next = (_currentIndex + 1) % widget.items.length;
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant ModernHeroBanner oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items.length != widget.items.length) {
+      _startAutoAdvance();
+    }
   }
 
   @override
   void dispose() {
+    _autoTimer?.cancel();
     _pageController.dispose();
     super.dispose();
-  }
-
-  void _nextPage() {
-    if (_currentIndex < widget.items.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 380),
-        curve: Curves.easeOutCubic,
-      );
-    } else {
-      _pageController.animateToPage(
-        0,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutCubic,
-      );
-    }
-  }
-
-  void _prevPage() {
-    if (_currentIndex > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 380),
-        curve: Curves.easeOutCubic,
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (widget.items.isEmpty) return const SizedBox.shrink();
 
-    final screenWidth = MediaQuery.of(context).size.width;
-    // Responsive height
-    final double bannerHeight = screenWidth > 900 ? 360 : 300;
+    final size = MediaQuery.sizeOf(context);
+    final isDesktop = size.width >= 768;
+    final bannerHeight = isDesktop ? 560.0 : 450.0;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        height: bannerHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(26),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.cyanPrimary.withOpacity(0.18),
-              blurRadius: 36,
-              spreadRadius: -4,
-              offset: const Offset(0, 10),
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              blurRadius: 24,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(26),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // 1. PageView for carousel artwork
-              PageView.builder(
-                controller: _pageController,
-                itemCount: widget.items.length,
-                onPageChanged: (index) => setState(() => _currentIndex = index),
-                itemBuilder: (context, index) {
-                  final item = widget.items[index];
-                  return Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.network(
-                        item.imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF0D1B2A), Color(0xFF1B263B), Color(0xFF415A77)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+    return SizedBox(
+      height: bannerHeight,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.items.length,
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            itemBuilder: (context, index) {
+              final item = widget.items[index];
+              final isLive = item.badgeText.toUpperCase().contains('LIVE');
+
+              return GestureDetector(
+                onTap: () => widget.onTap?.call(item),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Full-color theatrical photography
+                    Image.network(
+                      item.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          Container(color: AppColors.surfaceDark),
+                    ),
+
+                    // Subtle side vignette on desktop + deep bottom fade to pure #000000
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withValues(alpha: 0.42),
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.72),
+                            AppColors.background,
+                          ],
+                          stops: const [0.0, 0.35, 0.72, 1.0],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+
+                    // Left readability scrim
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withValues(alpha: 0.72),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.65],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                      ),
+                    ),
+
+                    // Editorial metadata & CTA overlay
+                    Positioned(
+                      left: isDesktop ? 40 : 20,
+                      right: isDesktop ? 40 : 20,
+                      bottom: 34,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 640),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.6),
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(
+                                      color: AppColors.glassBorderBright,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (isLive) ...[
+                                        Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.liveRed,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                      ],
+                                      Text(
+                                        item.badgeText.toUpperCase(),
+                                        style: AppTypography.badge.copyWith(
+                                          color: AppColors.noirWhite,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  item.formatInfo,
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.noirSilver,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          child: const Center(
-                            child: Icon(Icons.movie_filter_rounded, size: 70, color: AppColors.cyanPrimary),
-                          ),
+                            const SizedBox(height: 14),
+                            Text(
+                              item.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.h1.copyWith(
+                                fontSize: isDesktop ? 48 : 32,
+                                letterSpacing: -1.1,
+                                height: 1.04,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              item.subtitle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.bodyLarge.copyWith(
+                                color: AppColors.noirSilver,
+                                fontSize: isDesktop ? 15 : 13.5,
+                              ),
+                            ),
+                            const SizedBox(height: 22),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 10,
+                              children: [
+                                AuraGlowButton(
+                                  label: 'Play',
+                                  icon: Icons.play_arrow_rounded,
+                                  height: 46,
+                                  onPressed: () => widget.onWatchNow?.call(item),
+                                ),
+                                AuraGlowButton(
+                                  label: 'Watchlist',
+                                  icon: Icons.add_rounded,
+                                  isSecondary: true,
+                                  height: 46,
+                                  onPressed: () => widget.onAddList?.call(item),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      // Atmospheric Vignette & Gradient
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withOpacity(0.35),
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.85),
-                            ],
-                            stops: const [0.0, 0.45, 1.0],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-
-              // 2. Carousel Chevrons (< and >)
-              Positioned(
-                left: 12,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: _CarouselArrowButton(
-                    icon: Icons.chevron_left_rounded,
-                    onTap: _prevPage,
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              Positioned(
-                right: 12,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: _CarouselArrowButton(
-                    icon: Icons.chevron_right_rounded,
-                    onTap: _nextPage,
-                  ),
-                ),
-              ),
-
-              // 3. Centered Floating Glass HUD Card
-              Positioned(
-                left: 24,
-                right: 24,
-                bottom: 18,
-                child: Center(
-                  child: _buildFloatingGlassHUD(widget.items[_currentIndex]),
-                ),
-              ),
-            ],
+              );
+            },
           ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildFloatingGlassHUD(ModernHeroItem item) {
-    final bool isInList = _inListIds.contains(item.id);
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 580),
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-          decoration: BoxDecoration(
-            color: const Color(0xFF0F1522).withOpacity(0.72),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppColors.cyanPrimary.withOpacity(0.35),
-              width: 1.2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.cyanPrimary.withOpacity(0.12),
-                blurRadius: 24,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Title & Live Premiere Badge Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          // Pagination Dots (Bottom-Right)
+          if (widget.items.length > 1)
+            Positioned(
+              right: isDesktop ? 40 : 20,
+              bottom: 42,
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Text(
-                      item.title,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.h2.copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // LIVE PREMIERE Badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                children: List.generate(widget.items.length, (i) {
+                  final active = i == _currentIndex;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    margin: const EdgeInsets.only(left: 6),
+                    width: active ? 20 : 6,
+                    height: 6,
                     decoration: BoxDecoration(
-                      color: const Color(0x33FF334B),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: AppColors.liveRed, width: 1.0),
+                      color: active
+                          ? AppColors.noirWhite
+                          : Colors.white.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(999),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.liveRed,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          item.badgeText,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
-              const SizedBox(height: 6),
-
-              // Format Info (4K Ultra HD • Dolby Atmos)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.hd_rounded, size: 14, color: AppColors.cyanPrimary),
-                  const SizedBox(width: 4),
-                  Text(
-                    item.formatInfo,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.cyanElectric,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11.5,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-
-              // Action Buttons Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 1. "Watch Now" Glowing Cyan Button
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(22),
-                      onTap: () => widget.onWatchNow?.call(item),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF00F2FE), Color(0xFF4FACFE)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(22),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.cyanPrimary.withOpacity(0.5),
-                              blurRadius: 16,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.play_arrow_rounded, color: Colors.black, size: 18),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Watch Now',
-                              style: AppTypography.button.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // 2. "+ List" Frosted Glass Button
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(22),
-                      onTap: () {
-                        setState(() {
-                          if (isInList) {
-                            _inListIds.remove(item.id);
-                          } else {
-                            _inListIds.add(item.id);
-                          }
-                        });
-                        widget.onAddList?.call(item);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9.5),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(22),
-                          border: Border.all(
-                            color: isInList ? AppColors.cyanPrimary : Colors.white.withOpacity(0.25),
-                            width: 1.0,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              isInList ? Icons.check_rounded : Icons.add_rounded,
-                              color: isInList ? AppColors.cyanPrimary : Colors.white,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              isInList ? 'Added' : '+ List',
-                              style: AppTypography.bodySmall.copyWith(
-                                color: isInList ? AppColors.cyanPrimary : Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CarouselArrowButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _CarouselArrowButton({
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black.withOpacity(0.35),
-                border: Border.all(color: Colors.white.withOpacity(0.18), width: 1.0),
-              ),
-              child: Icon(icon, color: Colors.white, size: 22),
             ),
-          ),
-        ),
+        ],
       ),
     );
   }

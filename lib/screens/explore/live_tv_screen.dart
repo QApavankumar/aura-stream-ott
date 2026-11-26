@@ -80,9 +80,10 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
   @override
   Widget build(BuildContext context) {
     final activeProgram = _activeChannel.currentProgram;
+    final isDesktop = MediaQuery.sizeOf(context).width >= 768;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07090E),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -91,7 +92,7 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
             // 1. Top Header & Search Bar
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                padding: EdgeInsets.fromLTRB(24, isDesktop ? 84 : 16, 24, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -104,30 +105,35 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
                             Row(
                               children: [
                                 Text(
-                                  'LIVE TV & CHANNELS',
-                                  style: AppTypography.brandLogo(fontSize: 20, letterSpacing: 1.5),
+                                  'LIVE CHANNELS & SPORTS',
+                                  style: AppTypography.badge.copyWith(
+                                    color: AppColors.textMuted,
+                                    letterSpacing: 1.6,
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
                                   decoration: BoxDecoration(
-                                    color: AppColors.liveRed,
-                                    borderRadius: BorderRadius.circular(4),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.liveRed.withOpacity(0.6),
-                                        blurRadius: 8,
+                                    color: AppColors.surfaceDark,
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(color: AppColors.glassBorder),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.circle, size: 6, color: AppColors.liveRed),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'LIVE',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0.6,
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                  child: const Text(
-                                    '4K UHD',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 9.5,
-                                      fontWeight: FontWeight.w900,
-                                      letterSpacing: 0.5,
-                                    ),
                                   ),
                                 ),
                               ],
@@ -300,20 +306,12 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
                           color: isCurrent
-                              ? const Color(0xFF141F32)
-                              : AppColors.cardSurface,
+                              ? AppColors.cardSurface
+                              : AppColors.surfaceDark,
                           border: Border.all(
-                            color: isCurrent ? AppColors.cyanPrimary : Colors.white.withOpacity(0.12),
-                            width: isCurrent ? 1.8 : 1.0,
+                            color: isCurrent ? AppColors.noirWhite : AppColors.glassBorder,
+                            width: isCurrent ? 1.5 : 1.0,
                           ),
-                          boxShadow: [
-                            if (isCurrent)
-                              BoxShadow(
-                                color: AppColors.cyanPrimary.withOpacity(0.3),
-                                blurRadius: 14,
-                                spreadRadius: 1,
-                              ),
-                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -658,17 +656,17 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
                     children: [
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.cyanPrimary,
+                          backgroundColor: AppColors.noirWhite,
                           foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                          elevation: 6,
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+                          elevation: 0,
                         ),
                         onPressed: () => _watchFullscreen(channel),
-                        icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                        icon: const Icon(Icons.play_arrow_rounded, size: 18, color: Colors.black),
                         label: const Text(
-                          'Tune In Live',
-                          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+                          'Watch Live',
+                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: Colors.black),
                         ),
                       ),
                       const SizedBox(width: 10),

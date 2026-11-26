@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
+/// Monochrome Noir frosted surface container with crisp 1px hairline border.
 class FrostedGlass extends StatelessWidget {
   final Widget child;
   final double blur;
@@ -18,8 +19,8 @@ class FrostedGlass extends StatelessWidget {
   const FrostedGlass({
     super.key,
     required this.child,
-    this.blur = 18.0,
-    this.borderRadius = 20.0,
+    this.blur = 16.0,
+    this.borderRadius = 18.0,
     this.padding,
     this.margin,
     this.backgroundColor,
@@ -32,16 +33,18 @@ class FrostedGlass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(borderRadius);
+
     return Container(
       width: width,
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: radius,
         boxShadow: shadows,
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: radius,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
           child: Container(
@@ -49,7 +52,7 @@ class FrostedGlass extends StatelessWidget {
             decoration: BoxDecoration(
               color: backgroundColor ?? AppColors.glassSurface,
               gradient: backgroundGradient,
-              borderRadius: BorderRadius.circular(borderRadius),
+              borderRadius: radius,
               border: border ??
                   Border.all(
                     color: AppColors.glassBorder,

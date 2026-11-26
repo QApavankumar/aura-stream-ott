@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
-import '../../../widgets/common/frosted_glass.dart';
 
 class SocialLoginButton extends StatelessWidget {
   final IconData icon;
@@ -23,23 +22,23 @@ class SocialLoginButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: FrostedGlass(
-          borderRadius: 16,
-          blur: 14,
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-          backgroundColor: AppColors.glassSurface,
-          border: Border.all(color: AppColors.glassBorder.withOpacity(0.4), width: 1.0),
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          height: 46,
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: AppColors.glassBorder),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 22, color: iconColor ?? Colors.white),
-              const SizedBox(width: 10),
+              Icon(icon, size: 20, color: iconColor ?? AppColors.textPrimary),
+              const SizedBox(width: 8),
               Text(
                 label,
                 style: AppTypography.titleMedium.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],

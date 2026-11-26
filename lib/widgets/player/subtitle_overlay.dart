@@ -46,19 +46,12 @@ class SubtitleOverlay extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.85),
+                color: Colors.black.withValues(alpha: 0.85),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: PlayerTheme.cyanAccent.withOpacity(0.35),
+                  color: Colors.white.withValues(alpha: 0.16),
                   width: 1.0,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.75),
-                    blurRadius: 18,
-                    spreadRadius: 2,
-                  ),
-                ],
               ),
               child: Text(
                 activeCue.text,

@@ -3,6 +3,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../models/user_profile.dart';
 
+/// Colorized square-rounded cinema profile card inside Minimal Noir framing.
 class ProfileAvatarCard extends StatefulWidget {
   final UserProfile profile;
   final bool isEditMode;
@@ -21,22 +22,19 @@ class ProfileAvatarCard extends StatefulWidget {
   State<ProfileAvatarCard> createState() => _ProfileAvatarCardState();
 }
 
-class _ProfileAvatarCardState extends State<ProfileAvatarCard> with SingleTickerProviderStateMixin {
+class _ProfileAvatarCardState extends State<ProfileAvatarCard> {
   bool _isHovered = false;
 
-  IconData _getIcon(String iconKey) {
-    switch (iconKey) {
+  IconData _resolveIcon(String name) {
+    switch (name) {
+      case 'child_care':
+        return Icons.sentiment_satisfied_alt_rounded;
       case 'movie':
         return Icons.movie_creation_outlined;
-      case 'child_care':
-        return Icons.child_care_rounded;
       case 'group':
-        return Icons.group_rounded;
-      case 'sports_esports':
-        return Icons.sports_esports_outlined;
-      case 'rocket_launch':
-        return Icons.rocket_launch_outlined;
-      case 'person':
+        return Icons.groups_rounded;
+      case 'star':
+        return Icons.star_rounded;
       default:
         return Icons.person_rounded;
     }
@@ -44,155 +42,169 @@ class _ProfileAvatarCardState extends State<ProfileAvatarCard> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    final profile = widget.profile;
-    final primaryColor = profile.themeColor;
+    final p = widget.profile;
+    final secondaryTone = p.isKids
+        ? AppColors.kidsModeOrange
+        : Color.lerp(p.themeColor, Colors.black, 0.42)!;
 
     return MouseRegion(
+      cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTap: widget.onTap,
-        child: AnimatedScale(
-          scale: _isHovered ? 1.05 : 1.0,
-          duration: const Duration(milliseconds: 200),
+        child: SizedBox(
+          width: 142,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Avatar Circle Container
               Stack(
-                alignment: Alignment.center,
                 clipBehavior: Clip.none,
                 children: [
-                  // Outer Glow Aura
                   AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    width: 100,
-                    height: 100,
+                    duration: const Duration(milliseconds: 160),
+                    width: 132,
+                    height: 132,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: primaryColor.withOpacity(_isHovered ? 0.6 : 0.25),
-                          blurRadius: _isHovered ? 26 : 14,
-                          spreadRadius: _isHovered ? 4 : 0,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Avatar Body
-                  Container(
-                    width: 96,
-                    height: 96,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.surfaceDark,
-                      border: Border.all(
-                        color: _isHovered ? primaryColor : primaryColor.withOpacity(0.6),
-                        width: 2.5,
-                      ),
+                      borderRadius: BorderRadius.circular(20),
                       gradient: LinearGradient(
                         colors: [
-                          primaryColor.withOpacity(0.35),
-                          AppColors.surfaceDark,
+                          p.isKids ? AppColors.kidsModeAmber : p.themeColor,
+                          secondaryTone,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        _getIcon(profile.avatarIcon),
-                        size: 44,
-                        color: primaryColor,
+                      border: Border.all(
+                        color: _isHovered
+                            ? AppColors.noirWhite
+                            : Colors.white.withValues(alpha: 0.16),
+                        width: _isHovered ? 2.5 : 1.0,
                       ),
-                    ),
-                  ),
-
-                  // Kids Lock / Mode Badge
-                  if (profile.isKids)
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.kidsModeAmber,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: AppColors.kidsModeAmber,
-                              blurRadius: 8,
-                            ),
-                          ],
+                      boxShadow: [
+                        BoxShadow(
+                          color: (p.isKids ? AppColors.kidsModeAmber : p.themeColor)
+                              .withValues(alpha: _isHovered ? 0.35 : 0.18),
+                          blurRadius: _isHovered ? 24 : 14,
+                          offset: const Offset(0, 8),
                         ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.lock_rounded, size: 10, color: Colors.black),
-                            SizedBox(width: 3),
-                            Text(
-                              'KIDS',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black,
-                                letterSpacing: 0.5,
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: p.isKids
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.sentiment_very_satisfied_rounded,
+                                      size: 46,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(999),
+                                      ),
+                                      child: Text(
+                                        'KIDS',
+                                        style: AppTypography.badge.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          letterSpacing: 1.6,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Icon(
+                                  _resolveIcon(p.avatarIcon),
+                                  size: 54,
+                                  color: Colors.white.withValues(alpha: 0.95),
+                                ),
+                        ),
+                        if (p.isPrimary)
+                          Positioned(
+                            left: 8,
+                            top: 8,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.45),
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                '4K',
+                                style: AppTypography.badge.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                      ],
                     ),
-
-                  // Delete button in edit mode
-                  if (widget.isEditMode && !profile.isPrimary)
+                  ),
+                  if (widget.isEditMode && !p.isPrimary && widget.onDelete != null)
                     Positioned(
-                      top: -4,
-                      right: -4,
+                      right: -6,
+                      top: -6,
                       child: GestureDetector(
                         onTap: widget.onDelete,
                         child: Container(
                           width: 28,
                           height: 28,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
+                          decoration: BoxDecoration(
                             color: AppColors.error,
-                            boxShadow: [
-                              BoxShadow(color: AppColors.error, blurRadius: 8),
-                            ],
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.background,
+                              width: 2,
+                            ),
                           ),
-                          child: const Icon(Icons.remove, size: 18, color: Colors.white),
+                          child: const Icon(
+                            Icons.close_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                 ],
               ),
               const SizedBox(height: 12),
-
-              // Name
               Text(
-                profile.name,
-                style: AppTypography.titleMedium.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: _isHovered ? AppColors.cyanPrimary : Colors.white,
+                p.name,
+                style: AppTypography.titleLarge.copyWith(
+                  color: _isHovered
+                      ? AppColors.noirWhite
+                      : AppColors.textPrimary,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
               ),
-
-              const SizedBox(height: 4),
-
-              // Subtitle / Rating
+              const SizedBox(height: 3),
               Text(
-                profile.contentRating,
+                p.contentRating,
                 style: AppTypography.bodySmall.copyWith(
                   fontSize: 11,
-                  color: profile.isKids ? AppColors.kidsModeAmber : AppColors.textMuted,
+                  color: p.isKids
+                      ? AppColors.kidsModeAmber
+                      : AppColors.textMuted,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
               ),
             ],
           ),

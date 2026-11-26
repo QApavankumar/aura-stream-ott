@@ -324,13 +324,15 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = MediaQuery.sizeOf(context).width >= 768;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF07090E),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 130),
+          padding: EdgeInsets.fromLTRB(24, isDesktop ? 84 : 16, 24, 130),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 820),
@@ -347,29 +349,29 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                           Row(
                             children: [
                               Text(
-                                'AURA OFFLINE',
+                                'LIBRARY & OFFLINE',
                                 style: AppTypography.badge.copyWith(
-                                  color: AppColors.cyanPrimary,
-                                  letterSpacing: 2.0,
+                                  color: AppColors.textMuted,
+                                  letterSpacing: 1.6,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppColors.cyanPrimary.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: AppColors.surfaceDark,
+                                  borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                    color: AppColors.cyanPrimary.withOpacity(0.4),
-                                    width: 0.8,
+                                    color: AppColors.glassBorder,
+                                    width: 1.0,
                                   ),
                                 ),
                                 child: const Text(
                                   '4K DOLBY',
                                   style: TextStyle(
-                                    color: AppColors.cyanPrimary,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -377,12 +379,8 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Downloads & Storage',
-                            style: AppTypography.h2.copyWith(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                            ),
+                            'Library & Downloads',
+                            style: AppTypography.h1.copyWith(fontSize: 28),
                           ),
                         ],
                       ),
@@ -935,15 +933,9 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                   child: Container(
                     width: 32,
                     height: 32,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.cyanPrimary.withOpacity(0.9),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.cyanPrimary.withOpacity(0.5),
-                          blurRadius: 10,
-                        ),
-                      ],
+                      color: AppColors.noirWhite,
                     ),
                     child: const Icon(Icons.play_arrow_rounded, color: Colors.black, size: 20),
                   ),

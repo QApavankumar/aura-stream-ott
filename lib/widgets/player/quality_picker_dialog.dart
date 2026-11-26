@@ -59,19 +59,9 @@ class QualityPickerDialog extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(7),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  PlayerTheme.cyanAccent,
-                                  PlayerTheme.purpleAccent,
-                                ],
-                              ),
+                              color: Colors.white.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: PlayerTheme.cyanAccent.withOpacity(0.4),
-                                  blurRadius: 8,
-                                ),
-                              ],
+                              border: Border.all(color: PlayerTheme.borderGlass),
                             ),
                             child: const Icon(
                               Icons.high_quality_rounded,

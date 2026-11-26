@@ -1,8 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import 'soundwave_visualizer.dart';
 
 class LiveMatchItem {
   final String id;
@@ -26,6 +24,7 @@ class LiveMatchItem {
   });
 }
 
+/// Full-color live sports / broadcast card with crisp crimson LIVE indicator.
 class LiveMatchCard extends StatefulWidget {
   final LiveMatchItem item;
   final VoidCallback? onTap;
@@ -41,177 +40,130 @@ class LiveMatchCard extends StatefulWidget {
 }
 
 class _LiveMatchCardState extends State<LiveMatchCard> {
-  bool _isHovered = false;
+  bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
+    final isLive = item.statusText.toUpperCase().contains('LIVE') ||
+        item.isRedBadge ||
+        item.showRightLiveBadge;
 
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
       cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         onTap: widget.onTap,
-        child: Transform.translate(
-          offset: Offset(0.0, _isHovered ? -4.0 : 0.0),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeOutCubic,
-            width: 240,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: AppColors.cardSurface,
-              border: Border.all(
-                color: _isHovered ? AppColors.cyanPrimary : AppColors.glassBorder,
-                width: _isHovered ? 1.5 : 1.0,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.45),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8),
-                ),
-                if (_isHovered)
-                  BoxShadow(
-                    color: AppColors.cyanPrimary.withOpacity(0.3),
-                    blurRadius: 20,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 4),
-                  ),
-              ],
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          width: 300,
+          decoration: BoxDecoration(
+            color: AppColors.surfaceDark,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: _hovered ? AppColors.noirWhite : AppColors.glassBorder,
+              width: _hovered ? 1.5 : 1.0,
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  // 1. Background Action Image
-                  Image.network(
-                    item.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      decoration: const BoxDecoration(
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 152,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      item.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          Container(color: AppColors.cardSurface),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.7),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.sports_soccer_rounded, size: 40, color: AppColors.cyanPrimary),
-                      ),
                     ),
-                  ),
-
-                  // 2. Cinematic Vignette Gradient Overlays
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withOpacity(0.2),
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.9),
-                        ],
-                        stops: const [0.0, 0.45, 1.0],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-
-                  // 3. Top Badges (Left LIVE pill & Right LIVE pill matching screenshot)
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    right: 10,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Left Teal/Cyan LIVE Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF00B4D8).withOpacity(0.85),
-                            borderRadius: BorderRadius.circular(5),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF00B4D8).withOpacity(0.4),
-                                blurRadius: 6,
-                              ),
-                            ],
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.circle, size: 5, color: Colors.white),
-                              SizedBox(width: 4),
-                              Text(
-                                'LIVE',
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 9,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.72),
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.18),
                           ),
                         ),
-
-                        // Right Red LIVE Badge (as seen on matches in screenshot)
-                        if (item.showRightLiveBadge)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: AppColors.liveRed.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(5),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.liveRed.withOpacity(0.4),
-                                  blurRadius: 6,
-                                ),
-                              ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: isLive
+                                    ? AppColors.liveRed
+                                    : AppColors.textSecondary,
+                                shape: BoxShape.circle,
+                              ),
                             ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.circle, size: 5, color: Colors.white),
-                                SizedBox(width: 4),
-                                Text(
-                                  'LIVE',
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(width: 6),
+                            Text(
+                              item.statusText.toUpperCase(),
+                              style: AppTypography.badge.copyWith(fontSize: 9.5),
                             ),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // 4. Soundwave Audio Visualizer Overlay at Bottom
-                  const Positioned(
-                    left: 10,
-                    right: 10,
-                    bottom: 8,
-                    child: SizedBox(
-                      height: 18,
-                      child: SoundwaveVisualizer(
-                        barCount: 28,
-                        height: 18,
-                        primaryColor: AppColors.cyanPrimary,
-                        secondaryColor: Color(0xFF00E676),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.channel.toUpperCase(),
+                      style: AppTypography.badge.copyWith(
+                        color: AppColors.textMuted,
+                        fontSize: 9.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.titleLarge.copyWith(fontSize: 14.5),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      item.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

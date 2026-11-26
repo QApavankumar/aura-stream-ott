@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../providers/profile_provider.dart';
-import '../common/frosted_glass.dart';
 import '../common/aura_glow_button.dart';
 import '../common/aura_text_field.dart';
 
@@ -13,8 +12,8 @@ class AddProfileDialog extends StatefulWidget {
   static Future<void> show(BuildContext context) {
     return showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.75),
-      builder: (context) => const AddProfileDialog(),
+      barrierColor: Colors.black.withValues(alpha: 0.8),
+      builder: (_) => const AddProfileDialog(),
     );
   }
 
@@ -24,28 +23,25 @@ class AddProfileDialog extends StatefulWidget {
 
 class _AddProfileDialogState extends State<AddProfileDialog> {
   final TextEditingController _nameController = TextEditingController();
+  Color _selectedColor = const Color(0xFF2563EB);
+  String _selectedIcon = 'person';
   bool _isKids = false;
-  int _selectedColorIndex = 0;
-  int _selectedIconIndex = 0;
-  String? _errorMessage;
+  String? _errorText;
 
-  final List<Color> _palette = [
-    AppColors.cyanPrimary,
-    AppColors.neonMagenta,
-    AppColors.neonPurple,
-    AppColors.neonBlue,
-    AppColors.kidsModeAmber,
-    AppColors.success,
+  static const List<Color> _paletteColors = [
+    Color(0xFF2563EB),
+    Color(0xFFE11D48),
+    Color(0xFFF59E0B),
+    Color(0xFF10B981),
+    Color(0xFF7C3AED),
   ];
 
-  final List<String> _iconOptions = [
-    'person',
-    'movie',
-    'child_care',
-    'sports_esports',
-    'rocket_launch',
-    'auto_awesome',
-  ];
+  static const Map<String, IconData> _iconOptions = {
+    'person': Icons.person_rounded,
+    'movie': Icons.movie_creation_outlined,
+    'child_care': Icons.sentiment_satisfied_alt_rounded,
+    'star': Icons.star_rounded,
+  };
 
   @override
   void dispose() {
@@ -53,226 +49,170 @@ class _AddProfileDialogState extends State<AddProfileDialog> {
     super.dispose();
   }
 
-  void _onCreateProfile() {
+  void _saveProfile() {
     final name = _nameController.text.trim();
-    if (name.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a profile name';
-      });
+    if (name.length < 2) {
+      setState(() => _errorText = 'Enter at least 2 characters');
       return;
     }
 
-    final provider = context.read<ProfileProvider>();
-    provider.addProfile(
-      name: name,
-      color: _palette[_selectedColorIndex],
-      icon: _iconOptions[_selectedIconIndex],
-      isKids: _isKids,
-    );
-
+    context.read<ProfileProvider>().addProfile(
+          name: name,
+          color: _isKids ? AppColors.kidsModeAmber : _selectedColor,
+          icon: _isKids ? 'child_care' : _selectedIcon,
+          isKids: _isKids,
+        );
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      child: FrostedGlass(
-        borderRadius: 28,
-        blur: 24,
-        backgroundColor: AppColors.surfaceDark.withOpacity(0.92),
-        border: Border.all(color: AppColors.glassBorderCyan, width: 1.2),
-        padding: const EdgeInsets.all(24),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
+      backgroundColor: AppColors.surfaceDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: AppColors.glassBorder),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('New Profile', style: AppTypography.h3),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.textMuted),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
+                Text('New Profile', style: AppTypography.h2),
+                const SizedBox(height: 6),
+                Text(
+                  'Create an individualized viewing space with custom preferences.',
+                  style: AppTypography.bodyMedium,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
-                // Name Input
                 AuraTextField(
                   controller: _nameController,
-                  hintText: "Enter profile name (e.g. Alex, Sci-Fi Fan)",
-                  labelText: "PROFILE NAME",
+                  labelText: 'Profile Name',
+                  hintText: 'e.g. Sarah',
                   prefixIcon: Icons.badge_outlined,
-                  errorText: _errorMessage,
+                  errorText: _errorText,
                   onChanged: (_) {
-                    if (_errorMessage != null) {
-                      setState(() {
-                        _errorMessage = null;
-                      });
-                    }
+                    if (_errorText != null) setState(() => _errorText = null);
                   },
                 ),
                 const SizedBox(height: 20),
 
-                // Avatar Color Selection
-                Text(
-                  'AVATAR AURA COLOR',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text('Profile Color', style: AppTypography.bodySmall),
                 const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(_palette.length, (index) {
-                    final color = _palette[index];
-                    final isSelected = index == _selectedColorIndex;
+                  children: _paletteColors.map((c) {
+                    final selected = _selectedColor == c && !_isKids;
                     return GestureDetector(
-                      onTap: () => setState(() => _selectedColorIndex = index),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        width: 38,
-                        height: 38,
+                      onTap: () => setState(() {
+                        _selectedColor = c;
+                        _isKids = false;
+                      }),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        width: 34,
+                        height: 34,
                         decoration: BoxDecoration(
+                          color: c,
                           shape: BoxShape.circle,
-                          color: color,
                           border: Border.all(
-                            color: isSelected ? Colors.white : Colors.transparent,
+                            color: selected
+                                ? AppColors.noirWhite
+                                : Colors.transparent,
                             width: 2.5,
                           ),
-                          boxShadow: isSelected
-                              ? [
-                                  BoxShadow(
-                                    color: color.withOpacity(0.6),
-                                    blurRadius: 12,
-                                    spreadRadius: 2,
-                                  ),
-                                ]
-                              : null,
                         ),
-                        child: isSelected
-                            ? const Icon(Icons.check, size: 20, color: Colors.black)
-                            : null,
                       ),
                     );
-                  }),
+                  }).toList(),
                 ),
                 const SizedBox(height: 20),
 
-                // Avatar Icon Selector
-                Text(
-                  'AVATAR SYMBOL',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text('Avatar Icon', style: AppTypography.bodySmall),
                 const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(_iconOptions.length, (index) {
-                    final iconKey = _iconOptions[index];
-                    final isSelected = index == _selectedIconIndex;
+                  children: _iconOptions.entries.map((entry) {
+                    final selected = _selectedIcon == entry.key;
                     return GestureDetector(
-                      onTap: () => setState(() => _selectedIconIndex = index),
+                      onTap: () => setState(() => _selectedIcon = entry.key),
                       child: Container(
+                        margin: const EdgeInsets.only(right: 10),
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
+                          color: selected
+                              ? AppColors.noirWhite
+                              : AppColors.background,
                           borderRadius: BorderRadius.circular(12),
-                          color: isSelected
-                              ? _palette[_selectedColorIndex].withOpacity(0.2)
-                              : AppColors.glassSurface,
-                          border: Border.all(
-                            color: isSelected
-                                ? _palette[_selectedColorIndex]
-                                : AppColors.glassBorder,
-                            width: 1.5,
-                          ),
+                          border: Border.all(color: AppColors.glassBorder),
                         ),
                         child: Icon(
-                          _getIconData(iconKey),
-                          size: 22,
-                          color: isSelected
-                              ? _palette[_selectedColorIndex]
-                              : AppColors.textMuted,
+                          entry.value,
+                          color: selected
+                              ? AppColors.background
+                              : AppColors.textSecondary,
+                          size: 20,
                         ),
                       ),
                     );
-                  }),
+                  }).toList(),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
-                // Kids Profile Toggle
                 Container(
-                  padding: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: _isKids
-                        ? AppColors.kidsModeAmber.withOpacity(0.12)
-                        : AppColors.glassSurface,
-                    border: Border.all(
-                      color: _isKids
-                          ? AppColors.kidsModeAmber.withOpacity(0.4)
-                          : AppColors.glassBorder,
-                      width: 1.0,
-                    ),
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.glassBorder),
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.child_care_rounded,
-                        color: _isKids ? AppColors.kidsModeAmber : AppColors.textMuted,
-                        size: 26,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Kids Safe Mode',
-                              style: AppTypography.titleMedium.copyWith(
-                                color: _isKids ? AppColors.kidsModeAmber : Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'Filters content to age-appropriate titles and locks switching with a 4-digit PIN',
-                              style: AppTypography.bodySmall.copyWith(fontSize: 11),
-                            ),
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Kids Profile', style: AppTypography.titleMedium),
+                          Text(
+                            'PG-only library & PIN exit lock',
+                            style: AppTypography.bodySmall,
+                          ),
+                        ],
                       ),
                       Switch(
                         value: _isKids,
-                        activeColor: AppColors.kidsModeAmber,
-                        onChanged: (val) {
-                          setState(() {
-                            _isKids = val;
-                            if (val) {
-                              _selectedIconIndex = 2; // Child care icon
-                              _selectedColorIndex = 4; // Amber color
-                            }
-                          });
-                        },
+                        activeThumbColor: AppColors.kidsModeAmber,
+                        onChanged: (v) => setState(() => _isKids = v),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 24),
 
-                // Action Buttons
-                AuraGlowButton(
-                  label: 'Create Profile',
-                  icon: Icons.person_add_rounded,
-                  onPressed: _onCreateProfile,
+                Row(
+                  children: [
+                    Expanded(
+                      child: AuraGlowButton(
+                        label: 'Cancel',
+                        isSecondary: true,
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AuraGlowButton(
+                        label: 'Create',
+                        onPressed: _saveProfile,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -280,23 +220,5 @@ class _AddProfileDialogState extends State<AddProfileDialog> {
         ),
       ),
     );
-  }
-
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'movie':
-        return Icons.movie_creation_outlined;
-      case 'child_care':
-        return Icons.child_care_rounded;
-      case 'sports_esports':
-        return Icons.sports_esports_outlined;
-      case 'rocket_launch':
-        return Icons.rocket_launch_outlined;
-      case 'auto_awesome':
-        return Icons.auto_awesome_rounded;
-      case 'person':
-      default:
-        return Icons.person_rounded;
-    }
   }
 }

@@ -364,7 +364,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: AppColors.cyanPrimary, width: 0.8),
+            side: const BorderSide(color: AppColors.glassBorder, width: 0.8),
           ),
           content: Text(
             'Starting streaming for "${item.title}"...',
@@ -396,29 +396,30 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
   @override
   Widget build(BuildContext context) {
     final activeProfile = context.watch<ProfileProvider>().activeProfile;
+    final isDesktop = MediaQuery.sizeOf(context).width >= 768;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07090E),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         top: false,
         child: Column(
           children: [
-            // 1. Futuristic Glassmorphic Top App Bar
-            ModernTopAppBar(
-              activeProfile: activeProfile,
-              onSearch: (query) => setState(() => _searchQuery = query),
-              onNotificationTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: AppColors.surfaceDark,
-                    behavior: SnackBarBehavior.floating,
-                    content: const Text('Notifications: 2 Live Premieres Scheduled Today!'),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                );
-              },
-              onProfileTap: () => context.go(RouteNames.whoIsWatching),
-            ),
+            if (!isDesktop || widget.showAppBar)
+              ModernTopAppBar(
+                activeProfile: activeProfile,
+                onSearch: (query) => setState(() => _searchQuery = query),
+                onNotificationTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: AppColors.surfaceDark,
+                      behavior: SnackBarBehavior.floating,
+                      content: const Text('Notifications: 2 Live Premieres Scheduled Today!'),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  );
+                },
+                onProfileTap: () => context.go(RouteNames.whoIsWatching),
+              ),
 
             // 2. Scrollable Body
             Expanded(
@@ -434,7 +435,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                       : (data?.top10 ?? <Movie>[]);
 
                   return RefreshIndicator(
-                    color: AppColors.cyanPrimary,
+                    color: AppColors.noirWhite,
                     backgroundColor: AppColors.surfaceDark,
                     onRefresh: () async {
                       MockDataService.invalidateCache();
@@ -445,36 +446,11 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                     },
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      // 120px clearance at bottom for the floating frosted glass dock
-                      padding: const EdgeInsets.only(top: 14, bottom: 120),
+                      padding: const EdgeInsets.only(top: 0, bottom: 120),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // --- CATEGORY / CHANNEL HUB (TOP RAIL MATCHING SCREENSHOT) ---
-                          ModernCategoryHub(
-                            items: _hubItems,
-                            onSelect: (hub) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: AppColors.surfaceDark,
-                                  behavior: SnackBarBehavior.floating,
-                                  duration: const Duration(milliseconds: 900),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(color: AppColors.cyanPrimary, width: 0.8),
-                                  ),
-                                  content: Text(
-                                    'Filtering by ${hub.label}',
-                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // --- MASSIVE HERO BANNER (CHRONO HORIZON MATCHING SCREENSHOT) ---
+                          // --- EDGE-TO-EDGE NOIR HERO BANNER (PANEL 1) ---
                           ModernHeroBanner(
                             items: _heroItems,
                             onWatchNow: _onWatchHeroNow,
@@ -484,7 +460,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                   backgroundColor: AppColors.surfaceDark,
                                   behavior: SnackBarBehavior.floating,
                                   duration: const Duration(milliseconds: 1200),
-                                  content: Text('Updated "${hero.title}" in My List'),
+                                  content: Text('Updated "${hero.title}" in Watchlist'),
                                 ),
                               );
                             },
@@ -505,19 +481,43 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                             },
                           ),
 
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 24),
 
-                          // --- RAIL 1: LIVE CHANNELS & MATCHES (WITH NEON SOUNDWAVE) ---
+                          // --- CLEAN OBSIDIAN FILTER PILLS ---
+                          ModernCategoryHub(
+                            items: _hubItems,
+                            onSelect: (hub) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: AppColors.surfaceDark,
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: const Duration(milliseconds: 900),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(color: AppColors.glassBorder, width: 0.8),
+                                  ),
+                                  content: Text(
+                                    'Filtering by ${hub.label}',
+                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // --- RAIL 1: LIVE CHANNELS & SPORTS ---
                           _buildRailHeader(
-                            railTag: 'Rail 1',
+                            railTag: 'LIVE BROADCASTS',
                             title: 'Live Channels & Matches',
-                            onTap: () {},
+                            onTap: () => context.go(RouteNames.explore),
                           ),
                           const SizedBox(height: 14),
                           SizedBox(
-                            height: 154,
+                            height: 240,
                             child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
                               scrollDirection: Axis.horizontal,
                               physics: const BouncingScrollPhysics(),
                               itemCount: _liveMatches.length,
@@ -546,19 +546,19 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                             ),
                           ),
 
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 36),
 
-                          // --- RAIL 2: POPULAR IN 4K UHD (MATCHING SCREENSHOT) ---
+                          // --- RAIL 2: FEATURED IN 4K ---
                           _buildRailHeader(
-                            railTag: 'Rail 2',
-                            title: 'Popular in 4K UHD',
+                            railTag: '4K DOLBY VISION',
+                            title: 'Featured in 4K',
                             onTap: () {},
                           ),
                           const SizedBox(height: 14),
                           SizedBox(
-                            height: 230,
+                            height: 306,
                             child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
                               scrollDirection: Axis.horizontal,
                               physics: const BouncingScrollPhysics(),
                               itemCount: _popular4k.length,
@@ -587,20 +587,20 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                             ),
                           ),
 
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 36),
 
                           // --- RAIL 3: CONTINUE WATCHING (CROSS-DEVICE CLOUD SYNC) ---
                           if (continueWatchingList.isNotEmpty) ...[
                             _buildRailHeader(
-                              railTag: 'Rail 3',
+                              railTag: 'RESUME PLAYBACK',
                               title: 'Continue Watching',
                               onTap: () {},
                             ),
                             const SizedBox(height: 14),
                             SizedBox(
-                              height: 200,
+                              height: 214,
                               child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 24),
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: continueWatchingList.length,
@@ -615,21 +615,21 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
                                 },
                               ),
                             ),
-                            const SizedBox(height: 32),
+                            const SizedBox(height: 36),
                           ],
 
                           // --- RAIL 4: TOP 10 TODAY (DYNAMIC CLOUD SUPABASE CATALOG) ---
                           if (effectiveTop10.isNotEmpty) ...[
                             _buildRailHeader(
-                              railTag: 'Rail 4',
+                              railTag: 'MOST WATCHED',
                               title: 'Top 10 Today',
                               onTap: () {},
                             ),
                             const SizedBox(height: 14),
                             SizedBox(
-                              height: 270,
+                              height: 286,
                               child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 24),
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: effectiveTop10.length,
@@ -663,7 +663,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
     VoidCallback? onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -673,22 +673,15 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
             children: [
               Text(
                 railTag,
-                style: const TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w600,
+                style: AppTypography.badge.copyWith(
                   color: AppColors.textMuted,
-                  letterSpacing: 0.8,
+                  fontSize: 10.5,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
               Text(
                 title,
-                style: AppTypography.titleLarge.copyWith(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.2,
-                  color: Colors.white,
-                ),
+                style: AppTypography.h2.copyWith(fontSize: 20),
               ),
             ],
           ),
@@ -699,7 +692,7 @@ class _HomeScreenFeedState extends State<HomeScreenFeed> {
               padding: EdgeInsets.all(4.0),
               child: Icon(
                 Icons.arrow_forward_ios_rounded,
-                size: 15,
+                size: 14,
                 color: AppColors.textSecondary,
               ),
             ),

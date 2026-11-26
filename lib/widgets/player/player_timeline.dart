@@ -133,46 +133,29 @@ class _PlayerTimelineState extends State<PlayerTimeline> {
                       ),
                     ),
 
-                    // Played progress bar with neon cyan gradient
+                    // Crisp White Noir Played Scrubber Bar (Panel 4)
                     Container(
-                      height: 5,
+                      height: 3.5,
                       width: barWidth * currentFraction,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            PlayerTheme.purpleAccent,
-                            PlayerTheme.cyanAccent,
-                          ],
-                        ),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: PlayerTheme.cyanAccent.withOpacity(0.6),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
                       ),
                     ),
 
-                    // Glowing Scrubber Thumb
+                    // Minimal White Scrubber Thumb
                     Positioned(
-                      left: (barWidth * currentFraction) - 8,
+                      left: (barWidth * currentFraction) - 7,
                       child: Container(
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(
-                            color: PlayerTheme.cyanAccent,
-                            width: 2.5,
-                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: PlayerTheme.cyanAccent.withOpacity(0.9),
-                              blurRadius: 12,
-                              spreadRadius: 2,
+                              color: Colors.black.withValues(alpha: 0.45),
+                              blurRadius: 8,
                             ),
                           ],
                         ),
@@ -193,23 +176,17 @@ class _PlayerTimelineState extends State<PlayerTimeline> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.85),
+                                color: Colors.black.withValues(alpha: 0.88),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: PlayerTheme.cyanAccent.withOpacity(0.8),
+                                  color: Colors.white.withValues(alpha: 0.35),
                                   width: 1,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: PlayerTheme.cyanAccent.withOpacity(0.4),
-                                    blurRadius: 10,
-                                  ),
-                                ],
                               ),
                               child: Text(
                                 _formatDuration(displayTime),
                                 style: const TextStyle(
-                                  color: PlayerTheme.cyanAccent,
+                                  color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 0.5,

@@ -189,14 +189,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profileProvider = context.watch<ProfileProvider>();
     final authProvider = context.watch<AuthProvider>();
     final activeProfile = profileProvider.activeProfile;
+    final isDesktop = MediaQuery.sizeOf(context).width >= 768;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07090E),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 130),
+          padding: EdgeInsets.fromLTRB(24, isDesktop ? 84 : 16, 24, 130),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 820),
@@ -247,32 +248,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        // Avatar with glowing gradient halo
+                        // Avatar
                         Container(
-                          width: 68,
-                          height: 68,
+                          width: 64,
+                          height: 64,
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: activeProfile?.themeColor.withOpacity(0.2) ??
-                                AppColors.cyanPrimary.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            color: activeProfile?.themeColor ?? AppColors.cardSurface,
                             border: Border.all(
-                              color: activeProfile?.themeColor ?? AppColors.cyanPrimary,
-                              width: 2.5,
+                              color: AppColors.glassBorderBright,
+                              width: 1.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: (activeProfile?.themeColor ?? AppColors.cyanPrimary).withOpacity(0.45),
-                                blurRadius: 20,
-                                spreadRadius: 2,
-                              ),
-                            ],
                           ),
                           child: Icon(
                             activeProfile?.isKids == true
-                                ? Icons.child_care_rounded
+                                ? Icons.sentiment_satisfied_alt_rounded
                                 : Icons.person_rounded,
-                            size: 34,
-                            color: activeProfile?.themeColor ?? AppColors.cyanPrimary,
+                            size: 32,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(width: 18),
@@ -307,15 +300,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColors.neonPurple.withOpacity(0.25),
+                                        color: AppColors.cardSurface,
                                         borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: AppColors.neonPurple, width: 0.8),
+                                        border: Border.all(color: AppColors.glassBorderBright, width: 0.8),
                                       ),
                                       child: const Text(
                                         'VIP ULTRA',
                                         style: TextStyle(
-                                          color: Color(0xFFD9A7FF),
-                                          fontWeight: FontWeight.w900,
+                                          color: AppColors.noirSilver,
+                                          fontWeight: FontWeight.w800,
                                           fontSize: 9.5,
                                         ),
                                       ),
@@ -362,10 +355,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // --- VIP SUBSCRIPTION HUB CARD ---
                   FrostedGlass(
-                    borderRadius: 22,
-                    blur: 18,
-                    backgroundColor: const Color(0xFF131826).withOpacity(0.7),
-                    border: Border.all(color: AppColors.neonPurple.withOpacity(0.5), width: 1.0),
+                    borderRadius: 20,
+                    blur: 14,
+                    backgroundColor: AppColors.surfaceDark,
+                    border: Border.all(color: AppColors.glassBorder, width: 1.0),
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,15 +369,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Row(
                               children: [
                                 Container(
-                                  width: 36,
-                                  height: 36,
+                                  width: 38,
+                                  height: 38,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    gradient: const LinearGradient(
-                                      colors: [AppColors.cyanPrimary, AppColors.neonPurple],
-                                    ),
+                                    color: AppColors.cardSurface,
+                                    border: Border.all(color: AppColors.glassBorderBright),
                                   ),
-                                  child: const Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 20),
+                                  child: const Icon(Icons.workspace_premium_rounded, color: AppColors.noirWhite, size: 19),
                                 ),
                                 const SizedBox(width: 12),
                                 Column(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:aura_stream/models/media_item.dart';
-import 'package:aura_stream/theme/aura_theme.dart';
-import 'frosted_glass_card.dart';
+import 'package:aura_stream/core/theme/app_colors.dart';
+import 'package:aura_stream/core/theme/app_typography.dart';
 
-/// "Top 10" ranked vertical poster rail card with neon Orbitron typography rank badge.
-class TopTenCard extends StatelessWidget {
+/// Editorial Top 10 ranked poster card with bold architectural numeral.
+class TopTenCard extends StatefulWidget {
   final Movie item;
   final VoidCallback onTap;
 
@@ -15,148 +15,97 @@ class TopTenCard extends StatelessWidget {
   });
 
   @override
+  State<TopTenCard> createState() => _TopTenCardState();
+}
+
+class _TopTenCardState extends State<TopTenCard> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    final rank = item.rank ?? 1;
+    final rank = widget.item.rank ?? 1;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 155,
-        margin: const EdgeInsets.only(right: 18),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Vertical Poster Card
-            Padding(
-              padding: const EdgeInsets.only(left: 24),
-              child: FrostedGlassCard(
-                borderRadius: BorderRadius.circular(16),
-                borderColor: AuraTheme.glassBorder,
-                backgroundColor: AuraTheme.surfaceDark.withValues(alpha: 0.5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: SizedBox(
+          width: 190,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 222,
+                child: Stack(
+                  alignment: Alignment.bottomRight,
                   children: [
-                    // Poster Image
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                      child: AspectRatio(
-                        aspectRatio: 2 / 3,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.network(
-                              item.posterUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                color: AuraTheme.cardDark,
-                                child: const Icon(Icons.movie_creation_outlined, color: AuraTheme.textSecondary),
-                              ),
-                            ),
-
-                            // Top Rating Badge
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.75),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: AuraTheme.neonCyan.withValues(alpha: 0.4),
-                                    width: 0.8,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.star_rounded,
-                                      size: 12,
-                                      color: Colors.amber,
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Text(
-                                      item.rating,
-                                      style: AppTypography.bodySmall.copyWith(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                    Positioned(
+                      left: 0,
+                      bottom: -6,
+                      child: Text(
+                        '$rank',
+                        style: AppTypography.h1.copyWith(
+                          fontSize: 82,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white.withValues(alpha: 0.16),
+                          height: 0.9,
                         ),
                       ),
                     ),
-
-                    // Title & Genres
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.bodyMedium.copyWith(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 146,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceDark,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: _hovered
+                                ? AppColors.noirWhite
+                                : AppColors.glassBorder,
+                            width: _hovered ? 1.5 : 1.0,
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            item.genres.take(2).join(', '),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.bodySmall.copyWith(
-                              fontSize: 10,
-                              color: AuraTheme.textSecondary,
-                            ),
-                          ),
-                        ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(
+                          widget.item.posterUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              Container(color: AppColors.cardSurface),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-            // Numbered Rank Badge with Neon Stroke Orbitron Typography
-            Positioned(
-              left: 0,
-              bottom: 30,
-              child: Stack(
-                children: [
-                  // Outer Glow Stroke
-                  Text(
-                    '$rank',
-                    style: AppTypography.rankNumber.copyWith(
-                      foreground: Paint()
-                        ..style = PaintingStyle.stroke
-                        ..strokeWidth = 4
-                        ..color = rank <= 3
-                            ? AuraTheme.neonCyan
-                            : AuraTheme.purpleAura,
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 44),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.item.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.titleLarge.copyWith(fontSize: 14),
                     ),
-                  ),
-
-                  // Fill color
-                  Text(
-                    '$rank',
-                    style: AppTypography.rankNumber.copyWith(
-                      color: AuraTheme.darkObsidian,
+                    Text(
+                      '${widget.item.year} • ${widget.item.genres.isNotEmpty ? widget.item.genres.first : '4K HDR'}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.bodySmall,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

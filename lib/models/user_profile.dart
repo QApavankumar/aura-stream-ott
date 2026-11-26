@@ -43,13 +43,13 @@ class UserProfile {
     );
   }
 
-  // Pre-configured default profiles for Aura Stream
+  // Pre-configured default profiles for AURA Cinema Noir
   static List<UserProfile> get defaultProfiles => [
         const UserProfile(
           id: 'p_alex',
           name: 'Alex R.',
           avatarIcon: 'person',
-          themeColor: Color(0xFF00F2FE),
+          themeColor: Color(0xFF2563EB),
           isPrimary: true,
           contentRating: '4K Ultra HD • All Access',
         ),
@@ -57,14 +57,14 @@ class UserProfile {
           id: 'p_elena',
           name: 'Elena',
           avatarIcon: 'movie',
-          themeColor: Color(0xFFE040FB),
+          themeColor: Color(0xFFE11D48),
           contentRating: 'Sci-Fi & Cinema Club',
         ),
         const UserProfile(
           id: 'p_cyberkid',
           name: 'CyberKid',
           avatarIcon: 'child_care',
-          themeColor: Color(0xFFFF9E00),
+          themeColor: Color(0xFFF59E0B),
           isKids: true,
           contentRating: 'PG • Kids Hub Animated',
           kidsPin: '1234',
@@ -73,7 +73,7 @@ class UserProfile {
           id: 'p_guest',
           name: 'Watch Party',
           avatarIcon: 'group',
-          themeColor: Color(0xFF2979FF),
+          themeColor: Color(0xFF10B981),
           contentRating: 'Guest Mode',
         ),
       ];

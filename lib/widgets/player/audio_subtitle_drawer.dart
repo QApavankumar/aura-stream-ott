@@ -178,19 +178,9 @@ class _AudioSubtitleDrawerState extends State<AudioSubtitleDrawer>
                 Container(
                   padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        PlayerTheme.purpleAccent,
-                        PlayerTheme.cyanAccent,
-                      ],
-                    ),
+                    color: Colors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: PlayerTheme.cyanAccent.withOpacity(0.4),
-                        blurRadius: 10,
-                      ),
-                    ],
+                    border: Border.all(color: PlayerTheme.borderGlass),
                   ),
                   child: const Icon(
                     Icons.tune_rounded,

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:aura_stream/models/media_item.dart';
-import 'package:aura_stream/theme/aura_theme.dart';
-import 'frosted_glass_card.dart';
+import 'package:aura_stream/core/theme/app_colors.dart';
+import 'package:aura_stream/core/theme/app_typography.dart';
 
-/// Horizontal rail card for "Continue Watching" items,
-/// featuring a prominent Neon Cyan progress bar and frosted container.
-class ContinueWatchingCard extends StatelessWidget {
+/// Clean 16:9 Continue Watching card with crisp white playback progress bar.
+class ContinueWatchingCard extends StatefulWidget {
   final Movie item;
   final VoidCallback onTap;
   final VoidCallback onPlayTap;
@@ -18,148 +17,130 @@ class ContinueWatchingCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final progressVal = (item.progress ?? 0.5).clamp(0.0, 1.0);
+  State<ContinueWatchingCard> createState() => _ContinueWatchingCardState();
+}
 
-    return Container(
-      width: 220,
-      margin: const EdgeInsets.only(right: 14),
-      child: FrostedGlassCard(
-        borderRadius: BorderRadius.circular(16),
-        borderColor: AuraTheme.glassBorder,
-        backgroundColor: AuraTheme.surfaceDark.withValues(alpha: 0.65),
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Thumbnail with Play Button
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: SizedBox(
-                height: 120,
-                width: double.infinity,
+class _ContinueWatchingCardState extends State<ContinueWatchingCard> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final progress = (widget.item.progress ?? 0.35).clamp(0.05, 0.98);
+    final durationLabel = widget.item.remainingTime ??
+        (widget.item.duration.isNotEmpty
+            ? '${widget.item.duration} left'
+            : 'Continue');
+    final primaryGenre = widget.item.genres.isNotEmpty
+        ? widget.item.genres.first
+        : '4K HDR';
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: SizedBox(
+          width: 268,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 160),
+                height: 150,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: _hovered
+                        ? AppColors.noirWhite
+                        : AppColors.glassBorder,
+                    width: _hovered ? 1.5 : 1.0,
+                  ),
+                ),
+                clipBehavior: Clip.antiAlias,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.network(
-                      item.backdropUrl,
+                      widget.item.backdropUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: AuraTheme.cardDark,
-                        child: const Icon(Icons.movie, color: AuraTheme.textSecondary),
+                      errorBuilder: (_, __, ___) =>
+                          Container(color: AppColors.cardSurface),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.72),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                       ),
                     ),
-
-                    // Translucent dark vignette
-                    Container(
-                      color: Colors.black.withValues(alpha: 0.28),
-                    ),
-
-                    // Play Button Circle
                     Center(
                       child: GestureDetector(
-                        onTap: onPlayTap,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black.withValues(alpha: 0.6),
-                            border: Border.all(
-                              color: AuraTheme.neonCyan,
-                              width: 1.5,
+                        onTap: widget.onPlayTap,
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 150),
+                          opacity: _hovered ? 1.0 : 0.85,
+                          child: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.65),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.75),
+                              ),
                             ),
-                            boxShadow: AuraTheme.cyanGlow(blur: 10),
-                          ),
-                          child: const Icon(
-                            Icons.play_arrow_rounded,
-                            color: AuraTheme.neonCyan,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Remaining Time Tag (e.g. "45m left", "18m remaining")
-                    if (item.remainingTime != null)
-                      Positioned(
-                        bottom: 8,
-                        right: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.75),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            item.remainingTime!,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                            child: const Icon(
+                              Icons.play_arrow_rounded,
+                              color: AppColors.noirWhite,
+                              size: 26,
                             ),
                           ),
                         ),
                       ),
-                  ],
-                ),
-              ),
-            ),
-
-            // NEON CYAN PROGRESS BAR
-            ClipRRect(
-              child: SizedBox(
-                height: 3.5,
-                child: Stack(
-                  children: [
-                    Container(
-                      color: Colors.white.withValues(alpha: 0.15),
                     ),
-                    FractionallySizedBox(
-                      widthFactor: progressVal,
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
                       child: Container(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AuraTheme.purpleAura, AuraTheme.neonCyan],
-                          ),
-                          boxShadow: AuraTheme.cyanGlow(blur: 6),
+                        height: 3.5,
+                        color: Colors.white.withValues(alpha: 0.22),
+                        alignment: Alignment.centerLeft,
+                        child: FractionallySizedBox(
+                          widthFactor: progress,
+                          child: Container(color: AppColors.noirWhite),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-            // Metadata info
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.titleMedium.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    item.episodeLabel ?? item.genres.join(' • '),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AuraTheme.textSecondary,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 10),
+              Text(
+                widget.item.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.titleLarge.copyWith(fontSize: 14.5),
               ),
-            ),
-          ],
+              const SizedBox(height: 2),
+              Text(
+                widget.item.episodeLabel != null &&
+                        widget.item.episodeLabel!.isNotEmpty
+                    ? '${widget.item.episodeLabel} • $durationLabel'
+                    : '$durationLabel • $primaryGenre',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.bodySmall,
+              ),
+            ],
+          ),
         ),
       ),
     );

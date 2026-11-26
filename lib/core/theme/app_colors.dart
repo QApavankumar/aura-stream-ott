@@ -1,75 +1,70 @@
 import 'package:flutter/material.dart';
 
+/// Minimal Cinema Noir color tokens (Apple TV+ / Criterion Obsidian).
+/// Keeps UI chrome monochrome while preserving semantic status indicators
+/// and letting full-color cinema & profile imagery shine.
 class AppColors {
-  // Deep Backgrounds
-  static const Color background = Color(0xFF08090C);
-  static const Color surfaceDark = Color(0xFF0F131D);
-  static const Color cardSurface = Color(0xFF151B27);
-  static const Color surfaceOverlay = Color(0xCC090C14);
+  AppColors._();
 
-  // Neon Cyan Accents (Signature "Aura Stream" Glow)
-  static const Color cyanPrimary = Color(0xFF00F2FE);
-  static const Color cyanNeon = Color(0xFF00E5FF);
-  static const Color cyanElectric = Color(0xFF4FACFE);
-  static const Color cyanDim = Color(0xFF006875);
+  // Deep Obsidian Backgrounds
+  static const Color background = Color(0xFF000000);
+  static const Color surfaceDark = Color(0xFF111114);
+  static const Color cardSurface = Color(0xFF18181B);
+  static const Color surfaceOverlay = Color(0xD9000000);
 
-  // Secondary Neon Accents
-  static const Color neonPurple = Color(0xFF9D4EDD);
-  static const Color neonViolet = Color(0xFF7B2CBF);
-  static const Color neonMagenta = Color(0xFFE040FB);
-  static const Color neonBlue = Color(0xFF2979FF);
+  // Noir Monochrome Accents
+  static const Color noirWhite = Color(0xFFFFFFFF);
+  static const Color noirSilver = Color(0xFFE4E4E7);
+  static const Color noirPillFill = Color(0x1AFFFFFF);
 
-  // Kids Mode Accents
-  static const Color kidsModeAmber = Color(0xFFFF9E00);
-  static const Color kidsModeYellow = Color(0xFFFFD166);
+  // Legacy accent aliases mapped to Noir Monochrome so existing callers
+  // render cleanly in Obsidian without neon glow clutter.
+  static const Color cyanPrimary = noirWhite;
+  static const Color cyanNeon = noirSilver;
+  static const Color cyanElectric = Color(0xFFD4D4D8);
+  static const Color cyanDim = Color(0xFF27272A);
 
-  // Text Colors
+  static const Color neonPurple = Color(0xFFA1A1AA);
+  static const Color neonViolet = Color(0xFF71717A);
+  static const Color neonMagenta = noirSilver;
+  static const Color neonBlue = noirSilver;
+
+  // Semantic Indicators (Live Red, Supabase Emerald, Kids Amber)
+  static const Color liveRed = Color(0xFFEF4444);
+  static const Color success = Color(0xFF10B981);
+  static const Color warning = Color(0xFFF59E0B);
+  static const Color error = Color(0xFFEF4444);
+  static const Color kidsModeAmber = Color(0xFFF59E0B);
+  static const Color kidsModeOrange = Color(0xFFEA580C);
+
+  // Typography Hierarchy
   static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFF9EA7B8);
-  static const Color textMuted = Color(0xFF5D6678);
+  static const Color textSecondary = Color(0xFFA1A1AA);
+  static const Color textMuted = Color(0xFF71717A);
 
-  // Frosted Glass & Borders
-  static const Color glassSurface = Color(0x18FFFFFF);
-  static const Color glassSurfaceStrong = Color(0x30FFFFFF);
-  static const Color glassBorder = Color(0x26FFFFFF);
-  static const Color glassBorderCyan = Color(0x6600F2FE);
-  static const Color glassDockBackground = Color(0xD90E131F);
+  // Frosted Hairline Borders & Glass Surfaces
+  static const Color glassSurface = Color(0xCC111114);
+  static const Color glassBorder = Color(0x1AFFFFFF);
+  static const Color glassBorderBright = Color(0x40FFFFFF);
+  static const Color glassBorderCyan = Color(0x4DFFFFFF);
 
-  // Status & Badges
-  static const Color liveRed = Color(0xFFFF334B);
-  static const Color success = Color(0xFF00E676);
-  static const Color warning = Color(0xFFFFAB00);
-  static const Color error = Color(0xFFFF1744);
-
-  // Signature Gradients
+  // Gradients
   static const LinearGradient cyanGradient = LinearGradient(
-    colors: [cyanPrimary, cyanElectric],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient auraBrandGradient = LinearGradient(
-    colors: [cyanPrimary, neonPurple],
+    colors: [Color(0xFFFFFFFF), Color(0xFFE4E4E7)],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
 
-  static const LinearGradient glassDockGradient = LinearGradient(
-    colors: [
-      Color(0xEE111726),
-      Color(0xCC0B0F1A),
-    ],
+  static const LinearGradient obsidianFadeGradient = LinearGradient(
+    colors: [Colors.transparent, Color(0xCC000000), Color(0xFF000000)],
+    stops: [0.0, 0.65, 1.0],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
-  static const LinearGradient heroCardOverlay = LinearGradient(
-    colors: [
-      Colors.transparent,
-      Color(0x6608090C),
-      Color(0xF508090C),
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+  static const LinearGradient kidsProfileGradient = LinearGradient(
+    colors: [Color(0xFFF59E0B), Color(0xFFEA580C)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
 }

@@ -460,41 +460,29 @@ class PlayerControls extends StatelessWidget {
         ),
         const SizedBox(width: 32),
 
-        // Glowing Hero Play/Pause Button
+        // Clean White Noir Center Play/Pause Button (Panel 4)
         InkWell(
           onTap: onPlayPause,
           borderRadius: BorderRadius.circular(40),
           child: Container(
-            width: 76,
-            height: 76,
+            width: 72,
+            height: 72,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  PlayerTheme.cyanAccent.withOpacity(0.85),
-                  PlayerTheme.purpleAccent.withOpacity(0.85),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: PlayerTheme.cyanAccent.withOpacity(0.55),
-                  blurRadius: 26,
-                  spreadRadius: 2,
-                ),
-                BoxShadow(
-                  color: PlayerTheme.purpleAccent.withOpacity(0.4),
-                  blurRadius: 20,
-                  spreadRadius: 1,
+                  color: Colors.black.withValues(alpha: 0.45),
+                  blurRadius: 24,
+                  offset: const Offset(0, 6),
                 ),
               ],
             ),
             child: Center(
               child: Icon(
                 isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                color: Colors.white,
-                size: 42,
+                color: Colors.black,
+                size: 40,
               ),
             ),
           ),

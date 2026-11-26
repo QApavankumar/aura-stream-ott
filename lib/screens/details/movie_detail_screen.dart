@@ -348,15 +348,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: Color(0xFF07090E),
-        body: Center(child: CircularProgressIndicator(color: AppColors.cyanPrimary)),
+        backgroundColor: AppColors.background,
+        body: Center(child: CircularProgressIndicator(color: AppColors.noirWhite)),
       );
     }
 
     final media = _resolvedMovie;
     if (media == null) {
       return Scaffold(
-        backgroundColor: const Color(0xFF07090E),
+        backgroundColor: AppColors.background,
         appBar: AppBar(),
         body: Center(child: Text('Movie not found', style: AppTypography.titleLarge)),
       );
@@ -368,7 +368,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         : null;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF07090E),
+      backgroundColor: AppColors.background,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -491,78 +491,41 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             media.backdropUrl,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
-              color: const Color(0xFF0F172A),
-              child: const Icon(Icons.movie, size: 64, color: AppColors.cyanPrimary),
+              color: AppColors.surfaceDark,
+              child: const Icon(Icons.movie, size: 64, color: AppColors.textSecondary),
             ),
           ),
         ),
 
-        // Deep Cinematic Vignette Gradient Overlay
+        // Deep Cinematic Vignette Gradient Overlay into Pure #000000
         Container(
           height: height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.black.withOpacity(0.4),
+                Colors.black.withValues(alpha: 0.42),
                 Colors.transparent,
-                const Color(0xFF07090E).withOpacity(0.85),
-                const Color(0xFF07090E),
+                AppColors.background.withValues(alpha: 0.88),
+                AppColors.background,
               ],
-              stops: const [0.0, 0.35, 0.8, 1.0],
+              stops: const [0.0, 0.35, 0.78, 1.0],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
           ),
         ),
 
-        // Center Pulsing Play Button
-        Positioned.fill(
-          child: Center(
-            child: GestureDetector(
-              onTap: () => _playMovie(media),
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF00F2FE), Color(0xFF9D4EDD)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.cyanPrimary.withOpacity(0.6),
-                      blurRadius: 28,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.play_arrow_rounded,
-                  size: 46,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // Title at bottom of backdrop
+        // Title at bottom of full-color backdrop (Panel 3)
         Positioned(
-          left: 20,
-          right: 20,
-          bottom: 12,
+          left: 24,
+          right: 24,
+          bottom: 14,
           child: Text(
             media.title,
             style: AppTypography.h1.copyWith(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.2,
-              shadows: const [
-                Shadow(color: Colors.black, blurRadius: 16),
-                Shadow(color: Colors.black87, blurRadius: 24),
-              ],
+              fontSize: 36,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.9,
             ),
           ),
         ),
@@ -576,13 +539,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: [
-          _buildTechBadge('4K ULTRA HD', AppColors.cyanPrimary, Icons.hd_rounded),
+          _buildTechBadge('4K ULTRA HD', AppColors.noirWhite, Icons.hd_rounded),
           const SizedBox(width: 8),
-          _buildTechBadge('DOLBY VISION', const Color(0xFFFFD166), Icons.remove_red_eye_rounded),
+          _buildTechBadge('DOLBY VISION', AppColors.noirSilver, Icons.remove_red_eye_outlined),
           const SizedBox(width: 8),
-          _buildTechBadge('DOLBY ATMOS 7.1.4', Colors.white, Icons.surround_sound_rounded),
+          _buildTechBadge('DOLBY ATMOS 7.1.4', AppColors.noirSilver, Icons.surround_sound_outlined),
           const SizedBox(width: 8),
-          _buildTechBadge('IMAX ENHANCED', AppColors.neonPurple, Icons.aspect_ratio_rounded),
+          _buildTechBadge('IMAX ENHANCED', AppColors.textSecondary, Icons.aspect_ratio_rounded),
         ],
       ),
     );
@@ -590,23 +553,23 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   Widget _buildTechBadge(String label, Color color, IconData icon) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.4), width: 1.0),
+        color: AppColors.surfaceDark,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: AppColors.glassBorder, width: 1.0),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 13, color: color),
-          const SizedBox(width: 5),
+          const SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
               color: color,
-              fontSize: 9.5,
-              fontWeight: FontWeight.w900,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
               letterSpacing: 0.6,
             ),
           ),
@@ -621,23 +584,22 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       runSpacing: 8,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        // Rating pill
+        // Rating pill (Obsidian + Gold Star)
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF00F2FE), Color(0xFF4FACFE)],
-            ),
+            color: AppColors.surfaceDark,
             borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: AppColors.glassBorderBright),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.star_rounded, size: 14, color: Colors.black),
-              const SizedBox(width: 3),
+              const Icon(Icons.star_rounded, size: 14, color: AppColors.kidsModeAmber),
+              const SizedBox(width: 4),
               Text(
                 '${media.rating} IMDb',
-                style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.black, fontSize: 11),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 11.5),
               ),
             ],
           ),
@@ -673,35 +635,23 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget _buildActionButtons(BuildContext context, Movie media) {
     return Row(
       children: [
-        // Primary "Watch Now" Button
+        // Primary White "Play" Pill (Panel 3)
         Expanded(
           flex: 4,
-          child: Container(
+          child: SizedBox(
             height: 48,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF00F2FE), Color(0xFF4FACFE)],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.cyanPrimary.withOpacity(0.5),
-                  blurRadius: 18,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
             child: ElevatedButton.icon(
               onPressed: () => _playMovie(media),
-              icon: const Icon(Icons.play_arrow_rounded, color: Colors.black, size: 26),
+              icon: const Icon(Icons.play_arrow_rounded, color: Colors.black, size: 24),
               label: const Text(
-                'Watch Now',
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.w800, fontSize: 14),
+                'Play',
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 14),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                backgroundColor: AppColors.noirWhite,
+                foregroundColor: Colors.black,
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
               ),
             ),
           ),
@@ -709,20 +659,21 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
         const SizedBox(width: 10),
 
-        // Trailer Button
+        // Trailer Pill
         FrostedGlassCard(
-          borderRadius: BorderRadius.circular(14),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          borderColor: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(999),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          backgroundColor: AppColors.surfaceDark,
+          borderColor: AppColors.glassBorder,
           onTap: () => _showTrailerDialog(media),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.video_library_rounded, color: Colors.white, size: 18),
+              Icon(Icons.play_circle_outline_rounded, color: Colors.white, size: 18),
               SizedBox(width: 6),
               Text(
                 'Trailer',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12.5),
               ),
             ],
           ),
@@ -730,30 +681,32 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
         const SizedBox(width: 10),
 
-        // Watchlist Toggle Button
+        // Watchlist Toggle Pill
         FrostedGlassCard(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(999),
           padding: const EdgeInsets.all(12),
-          borderColor: _isInWatchlist ? AppColors.cyanPrimary : Colors.white.withOpacity(0.18),
+          backgroundColor: _isInWatchlist ? AppColors.noirWhite : AppColors.surfaceDark,
+          borderColor: _isInWatchlist ? AppColors.noirWhite : AppColors.glassBorder,
           onTap: _toggleWatchlist,
           child: Icon(
-            _isInWatchlist ? Icons.check_circle_rounded : Icons.bookmark_add_outlined,
-            color: _isInWatchlist ? AppColors.cyanPrimary : Colors.white,
+            _isInWatchlist ? Icons.check_rounded : Icons.add_rounded,
+            color: _isInWatchlist ? Colors.black : Colors.white,
             size: 22,
           ),
         ),
 
         const SizedBox(width: 10),
 
-        // Download Toggle Button
+        // Download Toggle Pill
         FrostedGlassCard(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(999),
           padding: const EdgeInsets.all(12),
-          borderColor: _isDownloaded ? const Color(0xFF00E676) : Colors.white.withOpacity(0.18),
+          backgroundColor: AppColors.surfaceDark,
+          borderColor: _isDownloaded ? AppColors.success : AppColors.glassBorder,
           onTap: _toggleDownload,
           child: Icon(
             _isDownloaded ? Icons.download_done_rounded : Icons.download_rounded,
-            color: _isDownloaded ? const Color(0xFF00E676) : Colors.white,
+            color: _isDownloaded ? AppColors.success : Colors.white,
             size: 22,
           ),
         ),
@@ -833,18 +786,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     // Circular avatar with neon gradient border
                     Container(
                       width: 58,
-                      height: 58,
+                      height: 62,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF00F2FE), Color(0xFF9D4EDD)],
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.22),
+                          width: 1.5,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.cyanPrimary.withOpacity(0.35),
-                            blurRadius: 10,
-                          ),
-                        ],
                       ),
                       padding: const EdgeInsets.all(2),
                       child: ClipOval(
@@ -907,20 +855,20 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.cyanPrimary.withOpacity(0.4)),
+                color: AppColors.surfaceDark,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: AppColors.glassBorderBright),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   value: _selectedSeasonIndex.clamp(0, seasons.length - 1),
-                  dropdownColor: const Color(0xFF0E1422),
+                  dropdownColor: AppColors.cardSurface,
                   borderRadius: BorderRadius.circular(14),
-                  icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.cyanPrimary),
+                  icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.noirWhite),
                   style: const TextStyle(
-                    color: AppColors.cyanPrimary,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12,
+                    color: AppColors.noirWhite,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12.5,
                   ),
                   items: List.generate(seasons.length, (index) {
                     return DropdownMenuItem<int>(
@@ -963,8 +911,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: const Color(0xFF0F1522),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          color: AppColors.surfaceDark,
+          border: Border.all(color: AppColors.glassBorder),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
